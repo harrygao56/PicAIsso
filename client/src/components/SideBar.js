@@ -12,7 +12,7 @@ function SideBar({ messageMap, people = [], onSelectPerson, selectedPerson }) {
       />
       {people.map((person) => {
       const messages = messageMap[person] || [];
-      const lastMessage = messages[messages.length - 1];
+      const lastMessage = messages[0];
       return (
         <MessageSelect 
           key={person} 
