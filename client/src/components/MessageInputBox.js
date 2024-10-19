@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import PopupBox from './PopupBox';  // Import the PopupBox
+import axios from 'axios';
 
-function MessageInputBox() {
+function MessageInputBox({ currentUser, messageRecipient, refetchMessages }) {
   const [message, setMessage] = useState('');
   const [image, setImage] = useState(null);
   const [showPopup, setShowPopup] = useState(true);
@@ -31,6 +32,31 @@ function MessageInputBox() {
       console.log('Image:', image);
       // Add further handling logic for sending the message
     }
+    // Send the message to the server
+    const sendMessage = async () => {
+      setLoadingMessageSend(true);
+      try {
+        const token = localStorage.getItem('token');
+        await axios.post('http://localhost:8000/messages', 
+          { 
+            recipient_username: messageRecipient, 
+            content: message
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+        refetchMessages();  // Refetch messages after sending
+      } catch (error) {
+        console.error('Failed to send message:', error);
+      } finally {
+        setLoadingMessageSend(false);
+      }
+    };
+
+    sendMessage();
     setMessage('');  // Clear message input
     setImage(null);  // Remove image preview
     setShowPopup(false);  // Close the popup on submit

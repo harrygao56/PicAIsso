@@ -70,7 +70,22 @@ const useMessages = () => {
     fetchMessages();
   }, []);
 
-  return { people, messageMap, loading, error };
+  const refetchMessages = async () => {
+    setLoading(true);
+    try {
+      // Fetch messages again
+      const response = await axios.get('/api/messages');
+      // Update state with new data
+      setPeople(response.data.people);
+      setMessageMap(response.data.messageMap);
+    } catch (error) {
+      setError('Failed to fetch messages');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { people, messageMap, loading, error, refetchMessages };
 };
 
 export default useMessages;

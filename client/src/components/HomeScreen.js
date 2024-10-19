@@ -5,8 +5,9 @@ import useMessages from '../Hooks/useMessages'; // Adjust the path if needed
 import Header from './Header';  // Import the new Header component
 
 function HomeScreen() {
-  const { people, messageMap, loading, error } = useMessages();
+  const { people, messageMap, loading, error, refetchMessages } = useMessages();
   const [selectedPerson, setSelectedPerson] = useState(null);
+  const {sendingMessageToNewPerson, setSendingMessageToNewPerson} = useState(false);
   const currentUser = localStorage.getItem("username");  // Replace with actual username or logic to retrieve it
   const handleLogout = () => {
     localStorage.removeItem("username");
@@ -40,15 +41,12 @@ function HomeScreen() {
 
         {/* Messages Box */}
         <div style={styles.messagesBox}>
-          {selectedPerson ? (
             <MessagesBox 
               messages={messageMap[selectedPerson] || []}
               currentUser={currentUser}
               selectedPerson={selectedPerson}
+              refetchMessages={refetchMessages}  // Pass the refetch function
             />
-          ) : (
-            <div>Select a person to view the conversation.</div>
-          )}
         </div>
       </div>
     </div>
