@@ -73,8 +73,13 @@ const useMessages = () => {
   const refetchMessages = async () => {
     setLoading(true);
     try {
+      const token = localStorage.getItem('token');
       // Fetch messages again
-      const response = await axios.get('http://localhost:8000/messages');
+      const response = await axios.get('http://localhost:8000/messages', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       // Update state with new data
       setPeople(response.data.people);
       setMessageMap(response.data.messageMap);
