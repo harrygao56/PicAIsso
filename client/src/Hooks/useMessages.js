@@ -74,7 +74,7 @@ const useMessages = () => {
     setLoading(true);
     try {
       // Fetch messages again
-      const response = await axios.get('/api/messages');
+      const response = await axios.get('http://localhost:8000/messages');
       // Update state with new data
       setPeople(response.data.people);
       setMessageMap(response.data.messageMap);
