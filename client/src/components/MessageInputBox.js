@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PopupBox from './PopupBox';  // Import the PopupBox
 import axios from 'axios';
 
-function MessageInputBox({ currentUser, messageRecipient, refetchMessages }) {
+function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSelectedPerson }) {
   const [message, setMessage] = useState('');
   const [image, setImage] = useState(null);
   const [showPopup, setShowPopup] = useState(true);
@@ -49,6 +49,7 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages }) {
           }
         );
         refetchMessages();  // Refetch messages after sending
+        setSelectedPerson(messageRecipient);
       } catch (error) {
         console.error('Failed to send message:', error);
       } finally {

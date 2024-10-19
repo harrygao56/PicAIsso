@@ -5,7 +5,7 @@ import MessageInputBox from './MessageInputBox';
 import MessagesBoxHeader from './Header';
 import { useState } from 'react';
 
-function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages }) {
+function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, setSelectedPerson }) {
   const [messageRecipient, setMessageRecipient] = useState(selectedPerson);
   console.log(messageRecipient);
   return (
@@ -66,6 +66,7 @@ function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages })
           currentUser={currentUser}
           messageRecipient={messageRecipient}
           refetchMessages={refetchMessages}
+          setSelectedPerson={setSelectedPerson}
         />
       </div>
     </div>
