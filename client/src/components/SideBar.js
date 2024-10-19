@@ -1,7 +1,7 @@
 import React from 'react';
 import MessageSelect from './MessageSelect'; // Make sure the path is correct
 
-function SideBar({ people = [], onSelectPerson, selectedPerson }) {
+function SideBar({ messageMap, people = [], onSelectPerson, selectedPerson }) {
   return (
     <div className="sidebar">
       <MessageSelect 
@@ -10,14 +10,19 @@ function SideBar({ people = [], onSelectPerson, selectedPerson }) {
         onSelectPerson={() => onSelectPerson(null)}
         selectedPerson={selectedPerson}
       />
-      {people.map((person) => (
+      {people.map((person) => {
+      const messages = messageMap[person] || [];
+      const lastMessage = messages[0];
+      return (
         <MessageSelect 
           key={person} 
           personName={person}
+        lastMessage={lastMessage}
           onSelectPerson={onSelectPerson}
           selectedPerson={selectedPerson}
         />
-      ))}
+        );
+    })}
     </div>
   );
 }
