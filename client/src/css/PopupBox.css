@@ -1,0 +1,77 @@
+/* Spinner animation */
+@keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Popup container styles */
+  .popupContainer {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+  }
+  
+  /* Main popup box */
+  .popup {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 500px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Popup text */
+  .popupText {
+    margin-right: 10px;
+  }
+  
+  /* Button styles */
+  .checkmarkButton {
+    background-color: transparent;
+    border: none;
+    color: #00ff00;
+    font-size: 18px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  
+  .closeButton {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  
+  /* Loading box */
+  .loadingBox {
+    width: 300px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+  }
+  
+  /* Spinner inside loading box */
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;  /* Light gray */
+    border-top: 5px solid #3498db;  /* Blue for animation */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  

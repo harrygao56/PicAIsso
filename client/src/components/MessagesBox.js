@@ -2,7 +2,7 @@ import React from 'react';
 import MessageFrom from './MessageFrom';
 import MessageTo from './MessageTo';
 import MessageInputBox from './MessageInputBox';
-import MessagesBoxHeader from './MessagesBoxHeader';
+import MessagesBoxHeader from './Header';
 
 function MessagesBox({ messages, currentUser, selectedPerson }) {
   return (
@@ -15,7 +15,6 @@ function MessagesBox({ messages, currentUser, selectedPerson }) {
       }}
     >
       
-      <MessagesBoxHeader selectedPerson={selectedPerson} />
       {/* Messages list should scroll if there are too many messages */}
       <div 
         style={{

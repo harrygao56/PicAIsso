@@ -2,11 +2,17 @@ import React, { useState } from 'react';
 import SideBar from './SideBar';
 import MessagesBox from './MessagesBox';
 import useMessages from '../Hooks/useMessages'; // Adjust the path if needed
+import Header from './Header';  // Import the new Header component
 
 function HomeScreen() {
   const { people, messageMap, loading, error } = useMessages();
   const [selectedPerson, setSelectedPerson] = useState(null);
   const currentUser = localStorage.getItem("username");  // Replace with actual username or logic to retrieve it
+  const handleLogout = () => {
+    localStorage.removeItem("username");
+    localStorage.removeItem("token");
+    window.location.reload();  // This will simulate the logout by reloading the page
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
@@ -17,36 +23,47 @@ function HomeScreen() {
   };
 
   return (
-    <div style={styles.container}>
-      {/* Sidebar */}
-      <div style={styles.sidebar}>
-        <SideBar 
-          people={people} 
-          onSelectPerson={handleSelectPerson} 
-          selectedPerson={selectedPerson}
-        />
-      </div>
+    <div style={styles.pageContainer}>
+      {/* Header */}
+      <Header onLogout={handleLogout} />
 
-      {/* Messages Box */}
-      <div style={styles.messagesBox}>
-        {selectedPerson ? (
-          <MessagesBox 
-            messages={messageMap[selectedPerson] || []}
-            currentUser={currentUser}
+      {/* Main content below header */}
+      <div style={styles.container}>
+        {/* Sidebar */}
+        <div style={styles.sidebar}>
+          <SideBar 
+            people={people} 
+            onSelectPerson={handleSelectPerson} 
             selectedPerson={selectedPerson}
           />
-        ) : (
-          <div>Select a person to view the conversation.</div>
-        )}
+        </div>
+
+        {/* Messages Box */}
+        <div style={styles.messagesBox}>
+          {selectedPerson ? (
+            <MessagesBox 
+              messages={messageMap[selectedPerson] || []}
+              currentUser={currentUser}
+              selectedPerson={selectedPerson}
+            />
+          ) : (
+            <div>Select a person to view the conversation.</div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
 const styles = {
+  pageContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100vh', // Full viewport height
+  },
   container: {
     display: 'flex',
-    height: '100vh', // Full viewport height
+    flex: 1,  // Remaining height after header
   },
   sidebar: {
     width: '30%',  // Sidebar takes 30% of the parent width
@@ -55,6 +72,7 @@ const styles = {
   },
   messagesBox: {
     flex: 1,  // Messages box takes the remaining 70% of the parent width
+    padding: '20px',
   },
 };
 

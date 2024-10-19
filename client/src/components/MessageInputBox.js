@@ -5,6 +5,9 @@ function MessageInputBox() {
   const [message, setMessage] = useState('');
   const [image, setImage] = useState(null);
   const [showPopup, setShowPopup] = useState(true);
+  const [loadingFirstSend, setLoadingFirstSend] = useState(false);
+  const [loadingImageGeneration, setLoadingImageGeneration] = useState(true);
+  const [loadingMessageSend, setLoadingMessageSend] = useState(false);
 
   // Handle input change
   const handleMessageChange = (e) => {
@@ -45,6 +48,8 @@ function MessageInputBox() {
         <PopupBox 
           message="Image uploaded successfully!" 
           onClose={handleClosePopup}
+          loadingImageGeneration={loadingImageGeneration}
+          setLoadingImageGeneration={setLoadingImageGeneration}
         />
       )}
 
