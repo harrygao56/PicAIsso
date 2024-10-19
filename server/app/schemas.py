@@ -5,7 +5,7 @@ from typing import Optional
 class UserCreate(BaseModel):
     username: str
     password: str
-    profile_picture: Optional[str] = None
+    profile_picture_url: Optional[str] = None
 
 class User(BaseModel):
     id: int
@@ -22,6 +22,7 @@ class MessageCreate(BaseModel):
 class Message(BaseModel):
     id: int
     content: str
+    image_url: Optional[str] = None
     timestamp: datetime
     sender: User
     recipient: User
