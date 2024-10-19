@@ -2,8 +2,9 @@ import React from 'react';
 import MessageFrom from './MessageFrom';
 import MessageTo from './MessageTo';
 import MessageInputBox from './MessageInputBox';
+import MessagesBoxHeader from './MessagesBoxHeader';
 
-function MessagesBox({ messages, currentUser }) {
+function MessagesBox({ messages, currentUser, selectedPerson }) {
   return (
     <div 
       className="messages-box"
@@ -13,8 +14,8 @@ function MessagesBox({ messages, currentUser }) {
         height: '100%',
       }}
     >
-      <h4>Conversation History</h4>
       
+      <MessagesBoxHeader selectedPerson={selectedPerson} />
       {/* Messages list should scroll if there are too many messages */}
       <div 
         style={{

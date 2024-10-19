@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import PopupBox from './PopupBox';  // Import the PopupBox
 
 function MessageInputBox() {
   const [message, setMessage] = useState('');
   const [image, setImage] = useState(null);
+  const [showPopup, setShowPopup] = useState(true);
 
   // Handle input change
   const handleMessageChange = (e) => {
@@ -14,6 +16,7 @@ function MessageInputBox() {
     const file = e.target.files[0];
     if (file) {
       setImage(URL.createObjectURL(file));  // Display image preview
+      setShowPopup(true);  // Show the popup when image is selected
     }
   };
 
@@ -27,10 +30,24 @@ function MessageInputBox() {
     }
     setMessage('');  // Clear message input
     setImage(null);  // Remove image preview
+    setShowPopup(false);  // Close the popup on submit
+  };
+
+  // Handle popup close
+  const handleClosePopup = () => {
+    setShowPopup(false);
   };
 
   return (
     <div style={styles.container}>
+      {/* PopupBox appears when showPopup is true */}
+      {showPopup && (
+        <PopupBox 
+          message="Image uploaded successfully!" 
+          onClose={handleClosePopup}
+        />
+      )}
+
       {image && (
         <div style={styles.imagePreview}>
           <img src={image} alt="Attachment preview" style={styles.image} />
@@ -68,6 +85,7 @@ function MessageInputBox() {
 // Inline styles for the component
 const styles = {
   container: {
+    position: 'relative',  // Relative positioning for popup to be placed above
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
