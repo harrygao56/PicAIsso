@@ -2,9 +2,12 @@ import React from 'react';
 import MessageFrom from './MessageFrom';
 import MessageTo from './MessageTo';
 import MessageInputBox from './MessageInputBox';
-import MessagesBoxHeader from './MessagesBoxHeader';
+import MessagesBoxHeader from './Header';
+import { useState } from 'react';
 
-function MessagesBox({ messages, currentUser, selectedPerson }) {
+function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, setSelectedPerson }) {
+  const [messageRecipient, setMessageRecipient] = useState(selectedPerson);
+  console.log(messageRecipient);
   return (
     <div 
       className="messages-box"
@@ -15,8 +18,24 @@ function MessagesBox({ messages, currentUser, selectedPerson }) {
       }}
     >
       
-      <MessagesBoxHeader selectedPerson={selectedPerson} />
       {/* Messages list should scroll if there are too many messages */}
+      {messages.length === 0 && (
+        <div style={{ padding: '10px' }}>
+          <input
+            type="text"
+            value={messageRecipient}
+            onChange={(e) => setMessageRecipient(e.target.value)}
+            placeholder="Enter recipient's username"
+            style={{
+              width: '100%',
+              padding: '8px',
+              fontSize: '16px',
+              border: '1px solid #ccc',
+              borderRadius: '4px'
+            }}
+          />
+        </div>
+      )}
       <div 
         style={{
           flex: 1,
@@ -43,7 +62,12 @@ function MessagesBox({ messages, currentUser, selectedPerson }) {
 
       {/* The MessageInputBox will always stay at the bottom */}
       <div style={{ borderTop: '1px solid #ccc', padding: '10px' }}>
-        <MessageInputBox />
+        <MessageInputBox 
+          currentUser={currentUser}
+          messageRecipient={messageRecipient}
+          refetchMessages={refetchMessages}
+          setSelectedPerson={setSelectedPerson}
+        />
       </div>
     </div>
   );
