@@ -1,34 +1,49 @@
 import React from 'react';
+import MessageFrom from './MessageFrom';
+import MessageTo from './MessageTo';
+import MessageInputBox from './MessageInputBox';
 
 function MessagesBox({ messages, currentUser }) {
   return (
-    <div className="messages-box">
+    <div 
+      className="messages-box"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+      }}
+    >
       <h4>Conversation History</h4>
-      <ul>
-        {messages.map((message) => (
-          <li 
-            key={message.id} 
-            style={{ 
-              display: 'flex', 
-              justifyContent: message.sender.username === currentUser ? 'flex-end' : 'flex-start' 
-            }}
-          >
-            <div 
-              style={{ 
-                backgroundColor: message.sender.username === currentUser ? '#e1ffc7' : '#f1f1f1', 
-                padding: '10px',
-                borderRadius: '10px',
-                maxWidth: '60%',
-                margin: '5px'
-              }}
+      
+      {/* Messages list should scroll if there are too many messages */}
+      <div 
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: '10px',
+        }}
+      >
+        <ul style={{ listStyleType: 'none', padding: 0 }}>
+          {messages.map((message) => (
+            <li 
+              key={message.id} 
+              style={{ display: 'flex', flexDirection: 'column' }}
             >
-              <strong>{message.sender.username}:</strong>
-              <p>{message.content}</p>
-              <small>{new Date(message.timestamp).toLocaleString()}</small>
-            </div>
-          </li>
-        ))}
-      </ul>
+              {/* Conditionally render MessageFrom or MessageTo based on the sender */}
+              {message.sender.username === currentUser ? (
+                <MessageTo message={message} />
+              ) : (
+                <MessageFrom message={message} />
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* The MessageInputBox will always stay at the bottom */}
+      <div style={{ borderTop: '1px solid #ccc', padding: '10px' }}>
+        <MessageInputBox />
+      </div>
     </div>
   );
 }

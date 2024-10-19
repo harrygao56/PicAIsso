@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './components/Login';
 import Register from './components/Register';
-import MessageList from './components/MessageList';
+import HomeScreen from './components/HomeScreen';
 import MessageCompose from './components/MessageCompose';
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
           <Route 
             path="/messages" 
             element={
-              isAuthenticated ? <MessageList /> : <Navigate to="/login" replace />
+              isAuthenticated ? <HomeScreen /> : <Navigate to="/login" replace />
             } 
           />
           <Route 
