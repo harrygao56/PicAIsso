@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile, Form
 from sqlalchemy.orm import Session
 from . import models, schemas, database
 from .database import engine
@@ -8,6 +8,8 @@ from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
+from .cloud_storage import upload_image_file_to_gcs
+import uuid
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -15,7 +17,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Add your React app's URL
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -72,16 +74,39 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
 
 # Routes
 @app.post("/users", response_model=schemas.User)
-def create_user(user: schemas.UserCreate, db: Session = Depends(database.get_db)):
-    db_user = db.query(models.User).filter(models.User.username == user.username).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="Username already registered")
-    hashed_password = get_password_hash(user.password)
-    db_user = models.User(username=user.username, hashed_password=hashed_password, profile_picture=user.profile_picture)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+async def create_user(
+    username: str = Form(...),
+    password: str = Form(...),
+    profile_picture: UploadFile = File(None),
+    db: Session = Depends(database.get_db)
+):
+    try:
+        db_user = db.query(models.User).filter(models.User.username == username).first()
+        if db_user:
+            raise HTTPException(status_code=400, detail="Username already registered")
+        
+        profile_picture_url = None
+        if profile_picture:
+            # Generate a unique filename
+            file_extension = profile_picture.filename.split(".")[-1]
+            unique_filename = f"{uuid.uuid4()}.{file_extension}"
+            
+            # Read the file content
+            file_content = await profile_picture.read()
+            
+            # Upload the file to GCS
+            profile_picture_url = upload_image_file_to_gcs(file_content, unique_filename)
+        
+        hashed_password = get_password_hash(password)
+        db_user = models.User(username=username, hashed_password=hashed_password, profile_picture_url=profile_picture_url)
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+        return db_user
+    except Exception as e:
+        print(f"Error creating user: {str(e)}")  # This will print to your console
+        db.rollback()  # Rollback the transaction in case of error
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 @app.post("/token")
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):

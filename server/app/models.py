@@ -9,7 +9,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-    profile_picture = Column(String)
+    profile_picture_url = Column(String, nullable=True)
 
     messages_sent = relationship("Message", back_populates="sender", foreign_keys="Message.sender_id")
     messages_received = relationship("Message", back_populates="recipient", foreign_keys="Message.recipient_id")

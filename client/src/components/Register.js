@@ -5,16 +5,23 @@ import { useNavigate } from 'react-router-dom';
 function Register() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [profilePicture, setProfilePicture] = useState('');
+  const [profilePicture, setProfilePicture] = useState(null);
   const history = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
+    if (profilePicture) {
+      formData.append('profile_picture', profilePicture);
+    }
+
     try {
-      const response = await axios.post('http://localhost:8000/users', {
-        username,
-        password,
-        profile_picture: profilePicture,
+      const response = await axios.post('http://localhost:8000/users', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
       if (response.status === 200) {
         history('/login');
@@ -25,6 +32,10 @@ function Register() {
       console.error('Registration failed:', error.response?.data?.detail || error.message);
       // You might want to set an error state here to display to the user
     }
+  };
+
+  const handleFileChange = (e) => {
+    setProfilePicture(e.target.files[0]);
   };
 
   return (
@@ -44,10 +55,9 @@ function Register() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <input
-          type="text"
-          placeholder="Profile Picture URL"
-          value={profilePicture}
-          onChange={(e) => setProfilePicture(e.target.value)}
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
         />
         <button type="submit">Register</button>
       </form>
