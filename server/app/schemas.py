@@ -10,7 +10,7 @@ class UserCreate(BaseModel):
 class User(BaseModel):
     id: int
     username: str
-    profile_picture: Optional[str] = None
+    profile_picture_url: Optional[str] = None
 
     class Config:
         orm_mode = True
