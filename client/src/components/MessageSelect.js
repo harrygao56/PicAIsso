@@ -1,23 +1,43 @@
 import React from 'react';
 
-function MessageSelect({ personName, onSelectPerson, selectedPerson }) {
+function MessageSelect({ personName, lastMessage, onSelectPerson, selectedPerson }) {
+  const isSelected = selectedPerson === personName;
+
+  const truncateMessage = (message, maxLength = 30) => {
+    if (message.length <= maxLength) return message;
+    return message.substr(0, maxLength) + '...';
+  };
+
   return (
-    <div
-      onClick={() => onSelectPerson(personName)}
-      style={{ 
-        fontWeight: personName === selectedPerson ? 'bold' : 'normal',
+    <div 
+      style={{
+        padding: '10px',
+        backgroundColor: isSelected ? '#e6e6e6' : 'transparent',
         cursor: 'pointer',
-        width: '100%',  // Takes full width of the parent flexbox container
-        height: '100px',  // Fixed height of 200px
+        borderBottom: '1px solid #ccc',
+        height: '60px',
         display: 'flex',
-        alignItems: 'center',  // Vertically center the text
-        justifyContent: 'center',  // Horizontally center the text
-        backgroundColor: personName === selectedPerson ? '#e0e0e0' : '#f9f9f9', // Optional background change on selection
-        border: '1px solid #ccc',  // Optional border for visual separation
-        boxSizing: 'border-box'  // Ensure padding and border are included in the width/height
+        flexDirection: 'column',
+        justifyContent: 'center'
       }}
+      onClick={() => onSelectPerson(personName)}
     >
-      {personName}
+      <div style={{ 
+        fontWeight: 'bold',
+        marginBottom: '5px'
+      }}>
+        {personName}
+      </div>
+      <div style={{ 
+        fontSize: '0.9em', 
+        color: '#666', 
+        whiteSpace: 'nowrap',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        height: '1.2em'
+      }}>
+        {lastMessage ? truncateMessage(lastMessage.content) : '\u00A0'}
+      </div>
     </div>
   );
 }

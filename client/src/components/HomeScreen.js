@@ -20,7 +20,8 @@ function HomeScreen() {
     <div style={styles.container}>
       {/* Sidebar */}
       <div style={styles.sidebar}>
-        <SideBar 
+        <SideBar
+          messageMap={messageMap} 
           people={people} 
           onSelectPerson={handleSelectPerson} 
           selectedPerson={selectedPerson}
