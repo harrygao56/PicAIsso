@@ -1,38 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import useMessages from '../Hooks/useMessages'; // Adjust path as needed
+import SideBar from './SideBar';
+import MessagesBox from './MessagesBox';
 
 function MessageList() {
-  const [messages, setMessages] = useState([]);
+  const { people, messageMap, loading, error } = useMessages();
+  const [selectedPerson, setSelectedPerson] = useState(null);
+  const currentUser = 'your-username';  // Replace with your actual username or authentication logic
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const response = await axios.get('http://localhost:8000/messages', {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-        });
-        setMessages(response.data);
-      } catch (error) {
-        console.error('Failed to fetch messages:', error);
-      }
-    };
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
-    fetchMessages();
-  }, []);
+  const handleSelectPerson = (person) => {
+    setSelectedPerson(person);
+  };
 
   return (
-    <div>
-      <h2>Messages</h2>
-      <Link to="/compose">Compose New Message</Link>
-      <ul>
-        {messages.map((message) => (
-          <li key={message.id}>
-            <strong>From: {message.sender.username}</strong>
-            <p>{message.content}</p>
-            <small>{new Date(message.timestamp).toLocaleString()}</small>
-          </li>
-        ))}
-      </ul>
+    <div className="message-container" style={{ display: 'flex' }}>
+      {/* Sidebar with list of people */}
+      <SideBar 
+        people={people} 
+        onSelectPerson={handleSelectPerson} 
+        selectedPerson={selectedPerson}
+      />
+
+      {/* Main message area */}
+      <div style={{ flex: 1, padding: '20px' }}>
+        <h2>Messages</h2>
+        <Link to="/compose">Compose New Message</Link>
+
+        {/* Show conversation if a person is selected */}
+        {selectedPerson ? (
+          <MessagesBox 
+            messages={messageMap[selectedPerson] || []}
+            currentUser={currentUser}
+          />
+        ) : (
+          <div>Select a person to view the conversation.</div>
+        )}
+      </div>
     </div>
   );
 }
