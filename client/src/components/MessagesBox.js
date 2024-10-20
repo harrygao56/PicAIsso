@@ -46,45 +46,38 @@ function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelected
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       console.log("received message from server", message);
-      const sender = message.sender.username;
-      const recipient = message.recipient.username;
-      // Ensure prevMap is a Map
-      console.log("peopleList", peopleList);  
-      console.log("recipient", recipient);
-      if (peopleList.includes(recipient)){
+      const { sender, recipient } = message;
+      const otherUser = sender.username === currentUser ? recipient.username : sender.username;
+      console.log("otherUser", otherUser);
+
       setMessagesMap(prevMap => {
         const newMap = new Map(prevMap instanceof Map ? prevMap : Object.entries(prevMap)); // Convert object to Map if needed
-        const key = sender === currentUser ? recipient : sender;
+        const key = sender.username === currentUser ? recipient.username : sender.username;
         const existingMessages = newMap.get(key) || [];
         newMap.set(key, [message, ...existingMessages]);
         console.log("newMap", newMap);
         return newMap;
-        });
-      }else{
-        console.log("adding new person to peopleList", recipient);
-        setPeopleList(prevPeopleList => [...prevPeopleList, recipient]);
-        setMessagesMap(prevMap => {
-          const newMap = new Map(prevMap instanceof Map ? prevMap : Object.entries(prevMap)); // Convert object to Map if needed
-          newMap.set(recipient, [message]);
-          return newMap;
-        });
-        
+      });
+
+      if (!peopleList.includes(otherUser)) {
+        console.log("adding new person to peopleList", otherUser);
+        setPeopleList(prevPeopleList => [otherUser,...prevPeopleList, ]);
       }
-      setSelectedPerson(recipient);
 
     };
 
     return () => {
       ws.close();
     };
-  }, [currentUser.id, peopleList]);
+  }, [currentUser, peopleList]);
 
   const sendMessage =async  (messageData) => {
+    console.log("sending message to server", messageData);
     if (socket && socket.readyState === WebSocket.OPEN) {
       console.log("sending message to server");
       socket.send(JSON.stringify(messageData));
     }
-    
+    setSelectedPerson(messageData.recipient_username);
     
   };
 
