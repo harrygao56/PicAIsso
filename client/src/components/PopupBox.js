@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../css/PopupBox.css';  // Import the CSS file
 import { X, Check, RefreshCw, Pencil} from 'lucide-react';
 
@@ -7,13 +7,22 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
   const [showRegenerateInput, setShowRegenerateInput] = useState(false);
   const [updatedMessage, setUpdatedMessage] = useState(message);
   const [imageGenerated, setImageGenerated] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsActive(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   const onClose = () => {
-    setImageUrl(null);
-    setLoadingImageGeneration(false);
-    setShowPopup(false);
-    setImageLoaded(false);
-    setPromptAnswered(true);
+    setIsActive(false);
+    setTimeout(() => {
+      setImageUrl(null);
+      setLoadingImageGeneration(false);
+      setShowPopup(false);
+      setImageLoaded(false);
+      setPromptAnswered(true);
+    }, 300);
   };
 
   const onGenerate = async () => {
@@ -87,7 +96,6 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
     popup: {
       padding: '5px',
       borderRadius: '20px',
-      backgroundColor: 'rgb(45, 45, 45)',
       fontSize: '1rem',
       marginBottom: '-1rem'
     },
@@ -108,7 +116,7 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
   }
 
   return (
-    <div className="popupContainer" style={styles.popup}>
+    <div className={`popupContainer ${isActive ? 'active' : ''}`}>
       {loadingImageGeneration ? (
         <div className="loadingBox" style = {{marginTop:"15px"}}>
           <div className="spinner"></div>
@@ -152,7 +160,7 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
               style={styles.regenerateInput}
             />
             <RefreshCw 
-              onClick={onRegenerateSubmit}
+              onClick={onRegenerateSubmit} className="circleButton"
               style={{ color: 'rgb(230, 230, 230)', height: '1.5rem', width: '1.5rem', marginLeft: '1.5rem' }}
             />
 
