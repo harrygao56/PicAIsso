@@ -5,7 +5,7 @@ import MessageInputBox from './MessageInputBox';
 import MessagesBoxHeader from './Header';
 import axios from 'axios';
 
-function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelectedPerson, messagesMap, setMessagesMap }) {
+function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelectedPerson, messagesMap, setMessagesMap, peopleList, setPeopleList }) {
   // Initialize messageMap as a Map if it's not already
   const [messages, setMessages] = useState([]);
   const [messageRecipient, setMessageRecipient] = useState(selectedPerson);
@@ -49,6 +49,9 @@ function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelected
       const sender = message.sender.username;
       const recipient = message.recipient.username;
       // Ensure prevMap is a Map
+      console.log("peopleList", peopleList);  
+      console.log("recipient", recipient);
+      if (peopleList.includes(recipient)){
       setMessagesMap(prevMap => {
         const newMap = new Map(prevMap instanceof Map ? prevMap : Object.entries(prevMap)); // Convert object to Map if needed
         const key = sender === currentUser ? recipient : sender;
@@ -56,13 +59,25 @@ function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelected
         newMap.set(key, [message, ...existingMessages]);
         console.log("newMap", newMap);
         return newMap;
-      });
+        });
+      }else{
+        console.log("adding new person to peopleList", recipient);
+        setPeopleList(prevPeopleList => [...prevPeopleList, recipient]);
+        setMessagesMap(prevMap => {
+          const newMap = new Map(prevMap instanceof Map ? prevMap : Object.entries(prevMap)); // Convert object to Map if needed
+          newMap.set(recipient, [message]);
+          return newMap;
+        });
+        
+      }
+      setSelectedPerson(recipient);
+
     };
 
     return () => {
       ws.close();
     };
-  }, [currentUser.id]);
+  }, [currentUser.id, peopleList]);
 
   const sendMessage =async  (messageData) => {
     if (socket && socket.readyState === WebSocket.OPEN) {

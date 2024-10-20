@@ -16,6 +16,20 @@ For the case of "flyer", this means that a flyer (a graphic with words on it) wo
 Please respond with the category only.
 """
 
+classify_text_prompt_light = """
+You are a specialized algorithm that classifies text messages so that it can be passed to an appropriate image generation model.
+
+You will be given a text message and you will need to classify it into one of the following categories:
+- none
+- illustration
+- diagram
+- flyer
+
+The purpose of this classification is to determine the most helpful image that can be sent along with the text message that can help the user convey what they are trying to communicate.
+For none, an image woule not be helpful. For illustration, a visual illustration would be helpful. For diagram, a diagram would be helpful. For flyer, a graphic with words on it would be helpful.
+Please respond with the category only.
+"""
+
 generate_prompt_prompts = {
     "illustration": """
     You are a specialized algorithm that generates prompts for an image generation model.

@@ -78,7 +78,7 @@ function Header({ currentUser, onLogout }) {
 
 const styles = {
   header: {
-    height: '75px',
+    height: '55px',
     width: '100%',
     backgroundColor: 'rgb(40, 40, 40)',
     display: 'flex',
