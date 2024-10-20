@@ -154,12 +154,27 @@ async def get_messages(
     ).order_by(models.Message.timestamp.desc()).all()
     return messages
 
-@app.get("/users", response_model=schemas.User)
-async def get_current_user(current_user: models.User = Depends(get_current_user)):
+# @app.get("/users", response_model=schemas.User)
+# async def get_current_user(current_user: models.User = Depends(get_current_user)):
+#     return {
+#         "id": current_user.id,
+#         "username": current_user.username,
+#         "profile_picture_url": current_user.profile_picture_url
+#     }
+
+@app.get("/users/{username}", response_model=schemas.User)
+async def get_user_by_username(
+    username: str,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(database.get_db)
+):
+    user = db.query(models.User).filter(models.User.username == username).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
     return {
-        "id": current_user.id,
-        "username": current_user.username,
-        "profile_picture_url": current_user.profile_picture_url
+        "id": user.id,
+        "username": user.username,
+        "profile_picture_url": user.profile_picture_url
     }
 
 @app.post("/classify")

@@ -11,18 +11,19 @@ function SideBar({ messageMap, people = [], onSelectPerson, selectedPerson }) {
         selectedPerson={selectedPerson}
       />
       {people.map((person) => {
-      const messages = messageMap[person] || [];
-      const lastMessage = messages[0];
-      return (
-        <MessageSelect 
-          key={person} 
-          personName={person}
-        lastMessage={lastMessage}
-          onSelectPerson={onSelectPerson}
-          selectedPerson={selectedPerson}
-        />
+        const messages = messageMap[person] || [];
+        const lastMessage = messages[0];
+        return (
+          <MessageSelect 
+            key={person} 
+            personName={person}
+            lastMessage={lastMessage}
+            lastMessageTimestamp={lastMessage ? lastMessage.timestamp : null}
+            onSelectPerson={onSelectPerson}
+            selectedPerson={selectedPerson}
+          />
         );
-    })}
+      })}
     </div>
   );
 }
