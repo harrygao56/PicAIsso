@@ -62,6 +62,7 @@ function MessageSelect({ personName, lastMessage, lastMessageTimestamp, onSelect
     <div 
       style={{
         padding: '10px',
+        paddingLeft: '20px',
         backgroundColor: isSelected ? '#e6e6e6' : 'transparent',
         cursor: 'pointer',
         borderBottom: '1px solid #ccc',

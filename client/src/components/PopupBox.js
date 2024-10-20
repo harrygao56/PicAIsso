@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../css/PopupBox.css';  // Import the CSS file
-import { X, Check, RefreshCw } from 'lucide-react';
+import { X, Check, RefreshCw, Pencil} from 'lucide-react';
 
 function PopupBox({ message, classification, loadingImageGeneration, setLoadingImageGeneration, setImageUrl, imageUrl, setShowPopup, imageLoaded, setImageLoaded, image, setImage, setPromptAnswered }) {
   const [additionalInfo, setAdditionalInfo] = useState('');
@@ -86,7 +86,6 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
   const styles = {
     popup: {
       padding: '5px',
-      paddingTop: '15px',
       borderRadius: '20px',
       backgroundColor: 'rgb(45, 45, 45)',
       fontSize: '1rem',
@@ -96,12 +95,13 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
       width: '25rem'
     },
     regenerateInput: {
-      width: '100%',
-      padding: '10px',
+      width: '22rem',
+      padding: '12px',
       marginTop: '10px',
-      borderRadius: '5px',
-      border: '1px solid #ccc',
-      backgroundColor: '#fff',
+      marginBottom: '15px',
+      borderRadius: '20px',
+      border: 'none',
+      backgroundColor: 'rgb(250, 250, 250)',
       color: '#333',
       fontSize: '1rem',
     }
@@ -114,7 +114,7 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
           <div className="spinner"></div>
         </div>
       ) : imageUrl ? (
-        <img src={imageUrl} alt="Generated" className="generatedImage" style={{ width: '300px', height: '300px', objectFit: 'cover', borderRadius: '10px' }} />
+        <img src={imageUrl} alt="Generated" className="generatedImage" style={{ width: '300px', height: '300px', objectFit: 'cover', borderRadius: '10px', marginTop: '20px' }} />
       ) : null}
       <div className="popup">
         <span className="popupText" style={styles.popupText}>
@@ -131,7 +131,7 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
         </button>
         {imageGenerated && (
           <button onClick={onRegenerateClick} className="regenerateButton">
-            <RefreshCw style={{ color: 'rgb(230, 230, 230)', height: '1.3rem', marginTop: '5px'}}/>
+            <Pencil style={{ color: 'rgb(230, 230, 230)', height: '1.2rem', marginTop: '5px'}}/>
           </button>
         )}
       </div>
@@ -148,12 +148,14 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
                   onRegenerateSubmit();
                 }
               }}
-              placeholder="Add additional information to change the image"
+              placeholder="Add additional details..."
               style={styles.regenerateInput}
             />
-            <button onClick={onRegenerateSubmit} style={styles.regenerateButton}>
-              Regenerate
-            </button>
+            <RefreshCw 
+              onClick={onRegenerateSubmit}
+              style={{ color: 'rgb(230, 230, 230)', height: '1.5rem', width: '1.5rem', marginLeft: '1.5rem' }}
+            />
+
           </div>
         </div>
       )}
