@@ -152,3 +152,11 @@ async def get_messages(
         (models.Message.sender_id == current_user.id) | (models.Message.recipient_id == current_user.id)
     ).order_by(models.Message.timestamp.desc()).all()
     return messages
+
+@app.get("/users", response_model=schemas.User)
+async def get_current_user(current_user: models.User = Depends(get_current_user)):
+    return {
+        "id": current_user.id,
+        "username": current_user.username,
+        "profile_picture_url": current_user.profile_picture_url
+    }
