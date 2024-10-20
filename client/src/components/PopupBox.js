@@ -6,6 +6,7 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [showRegenerateInput, setShowRegenerateInput] = useState(false);
   const [updatedMessage, setUpdatedMessage] = useState(message);
+  const [imageGenerated, setImageGenerated] = useState(false);
 
   const onClose = () => {
     setImageUrl(null);
@@ -32,6 +33,7 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
       setImageUrl(data.image_url);
       setLoadingImageGeneration(false);
       setImageLoaded(true);
+      setImageGenerated(true); // Set this new state when image is generated
     } catch (error) {
       console.error('Error fetching classification:', error);
       setLoadingImageGeneration(false);
@@ -52,6 +54,7 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
 
   const onRegenerateSubmit = async () => {
     setLoadingImageGeneration(true);
+    setShowRegenerateInput(false);  // Hide the input immediately
     try {
       const newMessage = updatedMessage + (additionalInfo ? ' ' + additionalInfo : '');
       setUpdatedMessage(newMessage);
@@ -72,11 +75,11 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
       setImageUrl(data.image_url);
       setLoadingImageGeneration(false);
       setImageLoaded(true);
-      setShowRegenerateInput(false);
       setAdditionalInfo('');
     } catch (error) {
       console.error('Error regenerating image:', error);
       setLoadingImageGeneration(false);
+      setShowRegenerateInput(true);  // Show the input again if there's an error
     }
   };
 
@@ -126,9 +129,11 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
         <button onClick={onClose} className="closeButton">
           <X style={{ color: 'rgb(230, 230, 230)', marginLeft: '-10px', marginTop: '5px'}}/>
         </button>
-        <button onClick={onRegenerateClick} className="regenerateButton">
-          <RefreshCw style={{ color: 'rgb(230, 230, 230)', height: '1.3rem', marginTop: '5px'}}/>
-        </button>
+        {imageGenerated && (
+          <button onClick={onRegenerateClick} className="regenerateButton">
+            <RefreshCw style={{ color: 'rgb(230, 230, 230)', height: '1.3rem', marginTop: '5px'}}/>
+          </button>
+        )}
       </div>
       {showRegenerateInput && (
         <div style={{ marginTop: '10px' }}>
@@ -137,6 +142,12 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
               type="text"
               value={additionalInfo}
               onChange={(e) => setAdditionalInfo(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  onRegenerateSubmit();
+                }
+              }}
               placeholder="Add additional information to change the image"
               style={styles.regenerateInput}
             />
