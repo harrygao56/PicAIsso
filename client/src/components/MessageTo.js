@@ -5,7 +5,7 @@ function MessageTo({ message }) {
     <div 
       style={{ 
         backgroundColor: '#e1ffc7', 
-        padding: '15px 15px',
+        padding: '10px 20px',
         borderRadius: '15px',
         maxWidth: '80%',
         margin: '10px',
@@ -25,7 +25,7 @@ function MessageTo({ message }) {
               maxWidth: '400px', 
               maxHeight: '600px',
               objectFit: 'contain', 
-              marginTop: '15px',
+              marginTop: '5px',
               borderRadius: '10px'
             }} 
           />
