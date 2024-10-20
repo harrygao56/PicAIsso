@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PopupBox from './PopupBox';  // Import the PopupBox
 import axios from 'axios';
+import { Send } from 'lucide-react';
 
 
 function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSelectedPerson, sendMessage }) {
@@ -134,7 +135,7 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
         />
 
         <button type="submit" style={styles.sendButton}>
-          ⬆️
+        <Send style={{ color: 'rgb(230, 230, 230)', marginTop: '5px', marginRight: '5px'}}/>
         </button>
       </form>
     </div>
@@ -151,21 +152,24 @@ const styles = {
     maxWidth: '500px',
     margin: '0 auto',
     borderRadius: '20px',
-    backgroundColor: '#2d2d2d',
+    backgroundColor: 'transparent',
     padding: '10px',
   },
   imagePreview: {
+    display: 'flex',
     marginBottom: '10px',
     textAlign: 'center',
+    justifyContent: 'center'
   },
   image: {
-    maxWidth: '100%',
-    borderRadius: '10px',
+    maxWidth: '94%',
+    border: '15px solid rgb(45, 45, 45)',
+    borderRadius: '20px'
   },
   form: {
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: '#1c1c1c',
+    backgroundColor: 'rgb(45, 45, 45)',
     borderRadius: '50px',
     padding: '10px',
   },
