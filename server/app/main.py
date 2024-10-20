@@ -12,6 +12,7 @@ from .cloud_storage import upload_image_file_to_gcs
 import uuid
 from .services.openai_client import OpenAIClient
 import json
+import logging
 
 models.Base.metadata.create_all(bind=engine)
 openai_client = OpenAIClient()
@@ -92,17 +93,18 @@ class ConnectionManager:
 
 manager = ConnectionManager()
 
+logger = logging.getLogger(__name__)
+
 @app.websocket("/ws/{token}")
 async def websocket_endpoint(websocket: WebSocket, token: str, db: Session = Depends(database.get_db)):
     try:
         current_user = await get_current_user(token, db)
         await manager.connect(websocket, current_user.id)
+        logger.info(f"WebSocket connection established for user: {current_user.username}")
         try:
             while True:
                 data = await websocket.receive_text()
                 message_data = json.loads(data)
-                
-                # Process the received message
                 recipient = db.query(models.User).filter(models.User.username == message_data['recipient']).first()
                 if not recipient:
                     await websocket.send_text(json.dumps({"error": "Recipient not found"}))
@@ -117,17 +119,25 @@ async def websocket_endpoint(websocket: WebSocket, token: str, db: Session = Dep
                 db.commit()
                 db.refresh(db_message)
 
-                # Send the message to the recipient if they're connected
-                await manager.send_personal_message(json.dumps({
+                message_out = {
                     "sender": current_user.username,
+                    "recipient": recipient.username,
                     "content": db_message.content,
                     "timestamp": db_message.timestamp.isoformat()
-                }), recipient.id)
+                }
+                await manager.send_personal_message(json.dumps(message_out), recipient.id)
+                await websocket.send_text(json.dumps(message_out))
+                logger.info(f"Message sent from {current_user.username} to {recipient.username}")
 
         except WebSocketDisconnect:
             manager.disconnect(current_user.id)
-    except HTTPException:
-        await websocket.close()
+            logger.info(f"WebSocket disconnected for user: {current_user.username}")
+    except HTTPException as e:
+        logger.error(f"Authentication error: {str(e)}")
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+    except Exception as e:
+        logger.error(f"Unexpected error in WebSocket connection: {str(e)}")
+        await websocket.close(code=status.WS_1011_INTERNAL_ERROR)
 
 # Routes
 @app.post("/users", response_model=schemas.User)
@@ -244,9 +254,11 @@ async def classify_message(
     # classification_result = openai_client.classify_text(message)
     # print(classification_result)
     return {"classification": "illustration"}
-
 @app.post("/getImage")
 async def get_image(
     request: schemas.MessageGetImageRequest,
 ):
     return {"image_url": "https://i.natgeofe.com/n/4f5aaece-3300-41a4-b2a8-ed2708a0a27c/domestic-dog_thumb_square.jpg"}
+
+
+

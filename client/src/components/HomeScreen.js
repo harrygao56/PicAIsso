@@ -5,7 +5,7 @@ import useMessages from '../Hooks/useMessages'; // Adjust the path if needed
 import Header from './Header';  // Import the new Header component
 
 function HomeScreen() {
-  const { people, messageMap, loading, error, refetchMessages } = useMessages();
+  const { people, messageMap, loading, error, sendMessage, isConnected } = useMessages();
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [sendingMessageToNewPerson, setSendingMessageToNewPerson] = useState(false); // Corrected useState usage
   const currentUser = localStorage.getItem("username");  // Replace with actual username or logic to retrieve it
@@ -49,8 +49,7 @@ function HomeScreen() {
               messages={selectedPerson && messageMap[selectedPerson] ? messageMap[selectedPerson] : []}
               currentUser={currentUser}
               selectedPerson={selectedPerson}
-              refetchMessages={refetchMessages}  // Pass the refetch function
-              setSelectedPerson={setSelectedPerson}
+              sendMessage={sendMessage}  // Make sure this line is present
             />
         </div>
       </div>
