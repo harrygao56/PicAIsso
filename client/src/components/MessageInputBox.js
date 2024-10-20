@@ -83,6 +83,7 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
           // Clear the message and imageUrl after sending
           setMessage('');
           setImageUrl(null);
+          setPromptAnswered(false);
         }
       } catch (error) {
         console.error('Failed to send message:', error);

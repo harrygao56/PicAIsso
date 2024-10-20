@@ -16,8 +16,8 @@ function SideBar({ messagesMap, people = [], onSelectPerson, selectedPerson }) {
           <MessageSelect 
             key={person} 
             personName={person}
-            lastMessage={messagesMap.get(person)[0]}
-            lastMessageTimestamp={messagesMap.get(person)[0] ? messagesMap.get(person)[0].timestamp : null}
+            lastMessage={messagesMap.get(person) ? messagesMap.get(person)[0] : null}
+            lastMessageTimestamp={messagesMap.get(person) && messagesMap.get(person)[0] ? messagesMap.get(person)[0].timestamp : null}
             onSelectPerson={onSelectPerson}
             selectedPerson={selectedPerson}
           />
