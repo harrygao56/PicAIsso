@@ -1,5 +1,10 @@
+<<<<<<< Updated upstream
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+=======
+import React from 'react';
+import { MessageCirclePlus } from 'lucide-react'; // Import the icon
+>>>>>>> Stashed changes
 
 function MessageSelect({ personName, lastMessage, lastMessageTimestamp, onSelectPerson, selectedPerson }) {
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
@@ -70,6 +75,7 @@ function MessageSelect({ personName, lastMessage, lastMessageTimestamp, onSelect
       }}
       onClick={() => onSelectPerson(personName)}
     >
+<<<<<<< Updated upstream
       {renderProfileIcon()}
       <div style={{ marginLeft: '10px', flex: 1 }}>
         <div style={{ 
@@ -99,6 +105,36 @@ function MessageSelect({ personName, lastMessage, lastMessageTimestamp, onSelect
           </div>
         </div>
       </div>
+=======
+      {personName === "Message to new user" ? (
+        <MessageCirclePlus style = {{alignSelf: 'center'}}/>
+      ) : (
+        <>
+          <div>{personName}</div>
+          <div style={{ 
+            fontSize: '0.9em', 
+            color: '#666', 
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            height: '2.4em',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <div style={{ flex: 1, overflow: 'hidden' }}>
+              <span>{lastMessage ? truncateMessage(lastMessage.content) : '\u00A0'}</span>
+            </div>
+            <div style={{ marginLeft: '10px', textAlign: 'right' }}>
+              <span style={{ fontSize: '0.8em', color: '#999' }}>
+                {lastMessageTimestamp ? new Date(lastMessageTimestamp).toLocaleString() : '\u00A0'}
+              </span>
+            </div>
+          </div>
+        </>
+      )}
+>>>>>>> Stashed changes
     </div>
   );
 }

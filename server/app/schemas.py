@@ -29,4 +29,10 @@ class Message(BaseModel):
 
     class Config:
         orm_mode = True
-        
+
+class MessageClassifyRequest(BaseModel):
+    message: str
+
+class MessageGetImageRequest(BaseModel):
+    message: str
+    classification: str
