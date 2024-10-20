@@ -30,11 +30,28 @@ function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, s
       }}
     >
       {/* Messages list should scroll if there are too many messages */}
+      {messages.length === 0 && (
+        <div style={{ padding: '10px' }}>
+          <input
+            type="text"
+            onChange={(e) => setMessageRecipient(e.target.value)}
+            placeholder="Enter recipient's username"
+            style={{
+              width: '100%',
+              padding: '8px',
+              fontSize: '16px',
+              border: '1px solid #ccc',
+              borderRadius: '4px'
+            }}
+          />
+        </div>
+      )}
+      
       <div 
         style={{
           flex: 1,
           overflowY: 'auto',
-          maxHeight: `calc(100vh - 100px - ${messageInputBoxHeight}px)`, // Use the calculated height
+          maxHeight: `calc(100vh - 75px - ${messageInputBoxHeight}px)`, // Use the calculated height
         }}
       >
         {messages.slice().reverse().map((message) => (
