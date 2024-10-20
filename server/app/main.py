@@ -187,12 +187,11 @@ async def classify_message(
     request: schemas.MessageClassifyRequest,  # Assuming you have a schema for this
 ):
     # Extract the message from the request
-    # message = request.message
+    message = request.message
     
     # # Use the OpenAI client to classify the message
-    # classification_result = openai_client.classify_text(message)
-    # print(classification_result)
-    return {"classification": "illustration"}
+    classification_result = openai_client.classify_text(message)
+    return {"classification": classification_result}
 
 @app.post("/getImage")
 async def get_image(
