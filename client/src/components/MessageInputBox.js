@@ -12,7 +12,8 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
   const [loadingImageGeneration, setLoadingImageGeneration] = useState(false);
   const [loadingMessageSend, setLoadingMessageSend] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
-
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [promptAnswered, setPromptAnswered] = useState(false);
 
   // Handle input change
   const handleMessageChange = (e) => {
@@ -47,13 +48,16 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
         setClassification(data.classification);
         if (data.classification === "none"){
           setLoadingImageGeneration(false);
+          setPromptAnswered(true);
+          handleSubmit();
         }else{
           setShowPopup(true);
         }
     } catch (error) {
         console.error('Error fetching classification:', error);
-        setClassificationLoading(false);
-    } 
+    } finally {
+      setClassificationLoading(false);
+    }
 };
 
   // Handle form submission
@@ -64,37 +68,37 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
       
       try {
         // First, get the classification
-        await fetchClassification();
-        
-        // Prepare the message data
-        const messageData = {
-          content: message.trim(),
-          recipient_username: messageRecipient,
-        };
+        if (!promptAnswered){
+          await fetchClassification();
+        }else{
+          const messageData = {
+            content: message.trim(),
+            recipient_username: messageRecipient,
+          };
+  
+          // Add image_url to messageData if it exists
+          if (imageUrl) {
+            messageData.image_url = imageUrl;
+          }
+          const token = localStorage.getItem('token');
+          const response = await axios.post('http://localhost:8000/messages', messageData, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          console.log('Message sent:', response.data);
+          
+          // Clear the message and imageUrl after sending
+          setMessage('');
+          setImageUrl(null);
+          refetchMessages();
 
-        // Add image_url to messageData if it exists
-        if (imageUrl) {
-          messageData.image_url = imageUrl;
+
         }
         
-        // Send the message to the server
-        const token = localStorage.getItem('token');
-        const response = await axios.post('http://localhost:8000/messages', messageData, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        console.log('Message sent:', response.data);
-        
-        // Clear the message and imageUrl after sending
-        setMessage('');
-        setImageUrl(null);
-        setShowPopup(false);
-        
-        // Refresh the messages
-        refetchMessages();
+        // Clear the message and imageUrl after sendingz
 
       } catch (error) {
         console.error('Failed to send message:', error);
@@ -114,7 +118,7 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
       {/* PopupBox appears when showPopup is true */}
       {showPopup && (
         <PopupBox 
-          message="Image uploaded successfully!" 
+          message={message}  // Pass the actual message state here
           classification={classification}
           onClose={handleClosePopup}
           loadingImageGeneration={loadingImageGeneration}
@@ -122,6 +126,11 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
           setImageUrl={setImageUrl}
           imageUrl={imageUrl}
           setShowPopup={setShowPopup}
+          imageLoaded={imageLoaded}
+          setImageLoaded={setImageLoaded}
+          image={image}
+          setImage={setImage}
+          setPromptAnswered={setPromptAnswered}
         />
       )}
 
@@ -132,16 +141,6 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
       )}
 
       <form onSubmit={handleSubmit} style={styles.form}>
-        <label htmlFor="image-upload" style={styles.attachButton}>
-          📎
-          <input 
-            type="file" 
-            id="image-upload" 
-            accept="image/*" 
-            onChange={handleImageChange} 
-            style={{ display: 'none' }} 
-          />
-        </label>
 
         <input
           type="text"

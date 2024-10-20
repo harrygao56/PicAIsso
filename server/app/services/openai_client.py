@@ -2,7 +2,7 @@ from openai import AzureOpenAI
 import os
 from dotenv import load_dotenv
 import requests
-import prompts
+import app.services.prompts as prompts
 import json
 
 
