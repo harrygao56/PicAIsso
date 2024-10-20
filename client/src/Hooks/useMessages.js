@@ -135,7 +135,7 @@ const useMessages = () => {
     }
   };
 
-  return { people, messageMap, loading, error, refetchMessages };
+  return { people, messageMap, loading, error, refetchMessages, setMessageMap };
 };
 
 export default useMessages;

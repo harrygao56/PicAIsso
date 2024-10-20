@@ -11,6 +11,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from .cloud_storage import upload_image_file_to_gcs
 import uuid
 from .services.openai_client import OpenAIClient
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
+import json
+
 
 models.Base.metadata.create_all(bind=engine)
 openai_client = OpenAIClient()
@@ -122,7 +126,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "client_id": user.id}
 
 @app.post("/messages", response_model=schemas.Message)
 async def create_message(
@@ -204,3 +208,82 @@ async def get_image(
         prompt = openai_client.generate_prompt(message, classification)
         image_url = openai_client.generate_diagram(prompt)
     return {"image_url": image_url}
+
+
+#WebScoket support
+
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: Dict[int, List[WebSocket]] = {}  # Dict to map user ID to connections
+
+    async def connect(self, websocket: WebSocket, user_id: int):
+        await websocket.accept()
+        if user_id not in self.active_connections:
+            self.active_connections[user_id] = []
+        self.active_connections[user_id].append(websocket)
+
+    def disconnect(self, websocket: WebSocket, user_id: int):
+        self.active_connections[user_id].remove(websocket)
+        if not self.active_connections[user_id]:  # Remove user from dict if no connections left
+            del self.active_connections[user_id]
+
+    async def send_personal_message(self, message: dict, recipient_id: int):
+        if recipient_id in self.active_connections:
+            for connection in self.active_connections[recipient_id]:
+                await connection.send_text(message)
+
+manager = ConnectionManager()
+@app.websocket("/ws/{client_id}")
+async def websocket_endpoint(websocket: WebSocket, client_id: int, db: Session = Depends(database.get_db)):
+    try:
+        await manager.connect(websocket, client_id)
+        print(f"Client {client_id} connected")
+        while True:
+            # Wait to receive data from the WebSocket client
+            data = await websocket.receive_text()
+            print(f"Received data from client {client_id}: {data}")
+            message_data = json.loads(data)  # Assuming the message is sent as JSON
+
+            # Validate and extract the fields
+            content = message_data.get("content")
+            image_url = message_data.get("image_url")
+            recipient_username = message_data.get("recipient_username")
+
+            # Find the recipient user by username
+            recipient = db.query(models.User).filter(models.User.username == recipient_username).first()
+            if not recipient:
+                print(f"Recipient {recipient_username} not found")
+                raise WebSocketDisconnect
+
+            # Create the message object in the database
+            db_message = models.Message(
+                content=content,
+                image_url=image_url,
+                sender_id=client_id,
+                recipient_id=recipient.id
+            )
+            db.add(db_message)
+            db.commit()
+            db.refresh(db_message)
+
+            # Prepare the message payload to send to the recipient
+            message_to_send = {
+                "id": db_message.id,
+                "content": db_message.content,
+                "image_url": db_message.image_url,
+                "timestamp": db_message.timestamp.isoformat(),
+                "sender_id": db_message.sender_id,
+                "recipient_id": db_message.recipient_id,
+                "sender_username": db_message.sender.username,
+                "recipient_username": db_message.recipient.username
+            }
+
+            # Send the message to the recipient
+            await manager.send_personal_message(json.dumps(message_to_send), recipient.id)
+
+    except WebSocketDisconnect:
+        print(f"Client {client_id} disconnected")
+        manager.disconnect(websocket, client_id)
+    except Exception as e:
+        print(f"Error in WebSocket connection for client {client_id}: {str(e)}")
+        manager.disconnect(websocket, client_id)
