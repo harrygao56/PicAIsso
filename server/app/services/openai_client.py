@@ -42,12 +42,8 @@ class OpenAIClient:
                 {"role": "user", "content": text}
             ]
         ).choices[0].message.content
-<<<<<<< Updated upstream:server/app/services/openai_client.py
-
-=======
         if response not in ["none", "illustration", "diagram", "flyer"]:
             return self.classify_text(text)
->>>>>>> Stashed changes:server/app/services/openai-client.py
         return response
     
     def generate_flyer_prompt(self, text: str) -> str:
