@@ -36,8 +36,9 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
     // Send the message to the server
     const fetchClassification = async () => {
       setClassificationLoading(true);
+      console.log(message);
       try {
-          const response = await fetch('YOUR_ENDPOINT_URL', {
+          const response = await fetch('http://localhost:8000/classify', {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
@@ -59,26 +60,11 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
   };
   
     const sendMessage = async () => {
-      setLoadingMessageSend(true);
       try {
-        const token = localStorage.getItem('token');
-        await axios.post('http://localhost:8000/messages', 
-          { 
-            recipient_username: messageRecipient, 
-            content: message
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }
-        );
-        refetchMessages();  // Refetch messages after sending
-        setSelectedPerson(messageRecipient);
+        fetchClassification();
       } catch (error) {
-        console.error('Failed to send message:', error);
+        console.error('Failed to get classification:', error);
       } finally {
-        setLoadingMessageSend(false);
       }
     };
 

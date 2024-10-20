@@ -10,12 +10,11 @@ function useClassify(message) {
         const fetchClassification = async () => {
             setClassificationLoading(true);
             try {
-                const response = await fetch('YOUR_ENDPOINT_URL', {
+                const response = await fetch(`http://localhost:8000/classify?message=${encodeURIComponent(message)}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ message }),
                 });
 
                 const data = await response.json();
@@ -34,4 +33,3 @@ function useClassify(message) {
 }
 
 export default useClassify;
-
