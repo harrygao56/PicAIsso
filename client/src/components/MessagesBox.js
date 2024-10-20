@@ -3,11 +3,13 @@ import MessageFrom from './MessageFrom';
 import MessageTo from './MessageTo';
 import MessageInputBox from './MessageInputBox';
 import MessagesBoxHeader from './Header';
+import useClassify from '../Hooks/useClassify';
 
 function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, setSelectedPerson }) {
   const [messageRecipient, setMessageRecipient] = useState(selectedPerson);
   const messageInputBoxRef = useRef(null); // Create a ref for MessageInputBox
   const [messageInputBoxHeight, setMessageInputBoxHeight] = useState(0);
+  
 
   useEffect(() => {
     setMessageRecipient(selectedPerson);
