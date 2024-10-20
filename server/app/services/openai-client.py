@@ -45,7 +45,10 @@ class OpenAIClient:
             return self.classify_text()
         return response
     
-    def generate_image_prompt(self, text: str) -> str:
+    def generate_flyer_prompt(self, text: str) -> str:
+        return ""
+    
+    def generate_illustration_prompt(self, text: str) -> str:
         return ""
     
     def generate_image(self, prompt: str) -> str:
