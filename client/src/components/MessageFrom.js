@@ -4,20 +4,36 @@ function MessageFrom({ message }) {
   return (
     <div 
       style={{ 
-        backgroundColor: '#f1f1f1', 
-        padding: '10px', 
-        borderRadius: '10px', 
-        maxWidth: '60%', 
-        margin: '5px', 
-        alignSelf: 'flex-start'  // Align the message to the left
+        backgroundColor: '#e1ffc7', 
+        padding: '15px 15px',
+        borderRadius: '15px',
+        maxWidth: '80%',
+        margin: '10px',
+        alignSelf: 'flex-end',
+        display: 'inline-block',
+        boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
       }}
     >
-      <strong>{message.sender.username}:</strong>
-      <p>{message.content}</p>
+      <strong style={{ fontSize: '1.1em' }}>{message.sender.username}:</strong>
+      <p style={{ fontSize: '1.05em', marginTop: '8px' }}>{message.content}</p>
       {message.image_url && (
-        <img src={message.image_url} alt="Message attachment" style={{ maxWidth: '100%', marginTop: '10px' }} />
+        <div>
+          <img 
+            src={message.image_url} 
+            alt="Message attachment" 
+            style={{ 
+              maxWidth: '400px', 
+              maxHeight: '600px',
+              objectFit: 'contain', 
+              marginTop: '15px',
+              borderRadius: '10px'
+            }} 
+          />
+        </div>
       )}
-      <small>{new Date(message.timestamp).toLocaleString()}</small>
+      <small style={{ display: 'block', marginTop: '10px', textAlign: 'right' }}>
+        {new Date(message.timestamp).toLocaleString()}
+      </small>
     </div>
   );
 }
