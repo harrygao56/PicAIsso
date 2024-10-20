@@ -39,7 +39,7 @@ function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, s
             onChange={(e) => setMessageRecipient(e.target.value)}
             placeholder="Enter recipient's username"
             style={{
-              width: '100%',
+              width: '98%',
               padding: '8px',
               fontSize: '16px',
               border: '1px solid #ccc',
