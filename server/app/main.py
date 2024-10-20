@@ -194,4 +194,13 @@ async def classify_message(
 async def get_image(
     request: schemas.MessageGetImageRequest,
 ):
-    return {"image_url": "https://i.natgeofe.com/n/4f5aaece-3300-41a4-b2a8-ed2708a0a27c/domestic-dog_thumb_square.jpg"}
+    message = request.message
+    classification = request.classification
+    prompt = ""
+    if classification == "illustration":
+        prompt = openai_client.generate_prompt(message, classification)
+        image_url = openai_client.generate_image(prompt)
+    elif classification == "diagram":
+        prompt = openai_client.generate_prompt(message, classification)
+        image_url = openai_client.generate_diagram(prompt)
+    return {"image_url": image_url}

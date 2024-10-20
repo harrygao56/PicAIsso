@@ -72,7 +72,12 @@ function MessageSelect({ personName, lastMessage, lastMessageTimestamp, onSelect
       onClick={() => onSelectPerson(personName)}
     >
       {personName === "Message to new user" ? (
-        <MessageCirclePlus style={{alignSelf: 'center' }}/>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+        <MessageCirclePlus style={{ marginRight: '8px', alignSelf: 'center', height: '2rem', width: '2rem'}} />
+        <strong><span>New conversation</span></strong>
+    </div>
+     
+    
       ) : (
         <>
           {renderProfileIcon()}
@@ -129,6 +134,9 @@ const styles = {
   defaultIcon: {
     fontSize: '24px',
     color: '#fff',
+  },
+  messageplus: {
+
   }
 };
 
