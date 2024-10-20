@@ -1,6 +1,6 @@
 import React from 'react';
 
-function MessageSelect({ personName, lastMessage, onSelectPerson, selectedPerson }) {
+function MessageSelect({ personName, lastMessage, lastMessageTimestamp, onSelectPerson, selectedPerson }) {
   const isSelected = selectedPerson === personName;
 
   const truncateMessage = (message, maxLength = 30) => {
@@ -34,9 +34,20 @@ function MessageSelect({ personName, lastMessage, onSelectPerson, selectedPerson
         whiteSpace: 'nowrap',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-        height: '1.2em'
+        height: '2.4em',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
       }}>
-        {lastMessage ? truncateMessage(lastMessage.content) : '\u00A0'}
+        <div style={{ flex: 1, overflow: 'hidden' }}>
+          <span>{lastMessage ? truncateMessage(lastMessage.content) : '\u00A0'}</span>
+        </div>
+        <div style={{ marginLeft: '10px', textAlign: 'right' }}>
+          <span style={{ fontSize: '0.8em', color: '#999' }}>
+            {lastMessageTimestamp ? new Date(lastMessageTimestamp).toLocaleString() : '\u00A0'}
+          </span>
+        </div>
       </div>
     </div>
   );
