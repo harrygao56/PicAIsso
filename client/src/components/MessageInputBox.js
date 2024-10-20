@@ -3,7 +3,7 @@ import PopupBox from './PopupBox';  // Import the PopupBox
 import axios from 'axios';
 
 
-function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSelectedPerson }) {
+function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSelectedPerson, sendMessage }) {
   const [message, setMessage] = useState('');
   const [image, setImage] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
@@ -67,39 +67,23 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
       setLoadingMessageSend(true);
       
       try {
-        // First, get the classification
-        if (!promptAnswered){
+        if (!promptAnswered) {
           await fetchClassification();
-        }else{
+        } else {
           const messageData = {
             content: message.trim(),
             recipient_username: messageRecipient,
+            image_url: imageUrl || null,
           };
-  
-          // Add image_url to messageData if it exists
-          if (imageUrl) {
-            messageData.image_url = imageUrl;
-          }
-          const token = localStorage.getItem('token');
-          const response = await axios.post('http://localhost:8000/messages', messageData, {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
-          });
-          
-          console.log('Message sent:', response.data);
+
+          // Send the message via WebSocket
+          sendMessage(messageData);
           
           // Clear the message and imageUrl after sending
           setMessage('');
           setImageUrl(null);
           refetchMessages();
-
-
         }
-        
-        // Clear the message and imageUrl after sendingz
-
       } catch (error) {
         console.error('Failed to send message:', error);
       } finally {
