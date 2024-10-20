@@ -14,6 +14,9 @@ function MessageFrom({ message }) {
     >
       <strong>{message.sender.username}:</strong>
       <p>{message.content}</p>
+      {message.image_url && (
+        <img src={message.image_url} alt="Message attachment" style={{ maxWidth: '100%', marginTop: '10px' }} />
+      )}
       <small>{new Date(message.timestamp).toLocaleString()}</small>
     </div>
   );
