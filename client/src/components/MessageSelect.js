@@ -7,7 +7,6 @@ function MessageSelect({ personName, lastMessage, lastMessageTimestamp, onSelect
 
   useEffect(() => {
     const fetchProfilePhoto = async () => {
-      // Check if personName is a valid username (you may need to adjust this check)
       if (personName.startsWith("Message to") || personName.includes(" ")) {
         setProfilePhotoUrl(null);
         return;
