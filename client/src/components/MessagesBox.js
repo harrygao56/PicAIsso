@@ -43,7 +43,7 @@ function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, s
               padding: '8px',
               fontSize: '16px',
               border: '1px solid #ccc',
-              borderRadius: '4px'
+              borderRadius: '8px'
             }}
           />
         </div>
@@ -85,10 +85,9 @@ function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, s
           bottom: 0, // Align to the bottom of the screen
           left: '65%', // Center horizontally
           transform: 'translateX(-50%)', // Adjust for centering
-          width: "69.9%",
-          borderTop: '1px solid #ccc', 
-          backgroundColor: 'white', // Ensure background is set to avoid transparency issues
-          zIndex: 1000 // Ensure it appears above other elements
+          width: "70%",
+          backgroundColor: 'transparent', // Ensure background is set to avoid transparency issues
+          zIndex: 1000 // Ensure it appears above other elements,
         }}
       >
         <MessageInputBox 
