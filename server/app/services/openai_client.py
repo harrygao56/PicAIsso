@@ -16,11 +16,18 @@ class OpenAIClient:
             azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
         )
 
+        self.classify_client = AzureOpenAI(
+            api_key=os.getenv("AZURE_OPENAI_API_KEY_FINETUNE"),  
+            api_version="2024-07-01-preview",
+            azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT_FINETUNE")
+        )
+
+
     def classify_text(self, text: str) -> str:
-        response = self.client.chat.completions.create(
-            model="gpt-4o-mini",
+        response = self.classify_client.chat.completions.create(
+            model="gpt-4o-mini-2024-07-18-finetuned3",
             messages=[
-                {"role": "system", "content": prompts.classify_text_prompt},
+                {"role": "system", "content": prompts.classify_text_prompt_light},
                 {"role": "user", "content": text}
             ]
         ).choices[0].message.content
@@ -47,7 +54,7 @@ class OpenAIClient:
         return response.data[0].url
     
     def generate_diagram(self, prompt: str) -> str:
-        payload = { "text": prompt }
+        payload = { "text": prompt, "background": True }
         headers = {
             "accept": "application/json",
             "content-type": "application/json",

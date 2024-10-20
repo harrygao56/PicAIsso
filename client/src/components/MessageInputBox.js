@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PopupBox from './PopupBox';  // Import the PopupBox
 import axios from 'axios';
 import { Send } from 'lucide-react';
@@ -73,7 +73,6 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
     }
 };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (message.trim() || imageUrl) {
@@ -89,10 +88,8 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
             image_url: imageUrl || null,
           };
 
-          // Send the message via WebSocket
           await sendMessage(messageData);
           
-          // Clear the message and imageUrl after sending
           setImage(null);
           setMessage('');
           setImageUrl(null);
@@ -113,10 +110,9 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
 
   return (
     <div style={styles.container}>
-      {/* PopupBox appears when showPopup is true */}
       {showPopup && (
         <PopupBox 
-          message={message}  // Pass the actual message state here
+          message={message}
           classification={classification}
           onClose={handleClosePopup}
           loadingImageGeneration={loadingImageGeneration}
@@ -193,7 +189,7 @@ const styles = {
     outline: 'none',
     backgroundColor: 'transparent',
     color: '#fff',
-    padding: '10px',
+    padding: '5px',
     fontSize: '16px',
   },
   attachButton: {

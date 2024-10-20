@@ -126,11 +126,13 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#ccc', 
+    flexShrink: 0, // Prevent the container from shrinking
   },
   profileImage: {
     width: '100%',
     height: '100%',
     objectFit: 'cover', 
+    minWidth: '40px', // Ensure the image maintains a minimum width
   },
   defaultIcon: {
     fontSize: '24px',
