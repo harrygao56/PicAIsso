@@ -3,6 +3,7 @@ sqlalchemy
 passlib[bcrypt]
 python-jose[cryptography]
 python-multipart
-google-cloud-storage
+gcloud
 pillow
 pytest
+openai
