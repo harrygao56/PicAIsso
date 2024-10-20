@@ -4,6 +4,5 @@ passlib[bcrypt]
 python-jose[cryptography]
 python-multipart
 google-cloud-storage
-google-cloud-sdk
 pillow
 pytest
