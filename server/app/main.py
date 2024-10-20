@@ -136,6 +136,7 @@ async def create_message(
     
     db_message = models.Message(
         content=message.content,
+        image_url=message.image_url,
         sender_id=current_user.id,
         recipient_id=recipient.id
     )
