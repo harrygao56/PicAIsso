@@ -15,4 +15,4 @@ bucket = storage_client.bucket(bucket_name)
 def upload_image_file_to_gcs(file_content, filename):
     blob = bucket.blob(filename)
     blob.upload_from_string(file_content, content_type='image/jpeg')
-    return f"https://storage.googleapis.com/{bucket.name}/{filename}"
+    return blob.public_url

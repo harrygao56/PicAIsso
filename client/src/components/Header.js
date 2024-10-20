@@ -1,7 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-function Header({ onLogout }) {
+function Header({ currentUser, onLogout }) {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);
+
+  useEffect(() => {
+    const fetchProfilePhoto = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          throw new Error('Token not found');
+        }
+
+        const response = await axios.get('http://localhost:8000/users', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true
+        });
+        setProfilePhotoUrl(response.data.profile_picture_url);
+      } catch (error) {
+        console.error('Error fetching profile picture:', error);
+        setProfilePhotoUrl(null);
+      }
+    };
+
+    if (currentUser) {
+      fetchProfilePhoto();
+    }
+  }, [currentUser]);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
@@ -11,19 +40,28 @@ function Header({ onLogout }) {
     onLogout();
     setShowDropdown(false); // Close the dropdown after logging out
   };
+
+  const renderProfileIcon = () => {
+    return (
+      <div style={styles.profileIconContainer}>
+        {profilePhotoUrl ? (
+          <img src={profilePhotoUrl} alt="Profile" style={styles.profileImage} />
+        ) : (
+          <span role="img" aria-label="Profile" style={styles.defaultIcon}>👤</span>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div style={styles.header}>
-      {/* Title centered in the header */}
       <h2 style={styles.text}>PicAIsso</h2>
 
-      {/* Profile Icon */}
       <div style={styles.profileContainer}>
-        <div style={styles.profileIcon} onClick={toggleDropdown}>
-          {/* You can replace this with an actual profile image or icon */}
-          <span role="img" aria-label="Profile">👤</span>
+        <div onClick={toggleDropdown}>
+          {renderProfileIcon()}
         </div>
 
-        {/* Dropdown Menu */}
         {showDropdown && (
           <div style={styles.dropdownMenu}>
             <button style={styles.dropdownItem} onClick={handleLogout}>
@@ -43,7 +81,7 @@ const styles = {
     backgroundColor: '#1c1c1c',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',  // Center elements horizontally
+    justifyContent: 'center',
     borderBottom: '1px solid #ccc',
     position: 'relative',
   },
@@ -52,12 +90,12 @@ const styles = {
     margin: 0,
     position: 'absolute',
     left: '50%',
-    transform: 'translateX(-50%)',  // Ensure the text is centered in the header
+    transform: 'translateX(-50%)',
     fontSize: '24px',
   },
   profileContainer: {
     position: 'absolute',
-    right: '20px',  // Align the profile icon to the right
+    right: '20px',
     cursor: 'pointer',
   },
   profileIcon: {
@@ -85,6 +123,26 @@ const styles = {
     textAlign: 'left',
     width: '100%',
   },
+  profileIconContainer: {
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%', 
+    overflow: 'hidden', 
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ccc', 
+    cursor: 'pointer',
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover', 
+  },
+  defaultIcon: {
+    fontSize: '24px',
+    color: '#fff',
+  }
 };
 
 export default Header;
