@@ -4,7 +4,6 @@ import '../css/PopupBox.css';  // Import the CSS file
 function PopupBox({ message, onClose, onGenerate, loadingImageGeneration }) {
   return (
     <div className="popupContainer">
-      <div className="popup2">
         {loadingImageGeneration && (
           <div className="loadingBox">
             <div className="spinner"></div> {/* Apply the class instead of inline styles */}
@@ -24,7 +23,6 @@ function PopupBox({ message, onClose, onGenerate, loadingImageGeneration }) {
             ✖️
           </button>
         </div>
-      </div>
     </div>
   );
 }

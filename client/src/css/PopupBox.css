@@ -11,6 +11,12 @@
   /* Popup container styles */
   .popupContainer {
     position: absolute;
+
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     bottom: 100px;
     left: 50%;
     transform: translateX(-50%);
@@ -19,7 +25,6 @@
   
   /* Main popup box */
   .popup {
-    background-color: #333;
     color: #fff;
     padding: 10px 20px;
     border-radius: 10px;
