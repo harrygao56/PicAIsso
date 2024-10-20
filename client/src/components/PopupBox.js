@@ -43,7 +43,7 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
   const onSetImageLoaded = () => {
     setImage(imageUrl);
     setShowPopup(false);
-    setImageLoaded(true);
+    setImageLoaded(false);
     setPromptAnswered(true);
   };
 

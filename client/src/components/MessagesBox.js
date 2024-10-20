@@ -24,6 +24,8 @@ function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelected
       console.log("setting for selectedPerson", selectedPerson);
       console.log("setting messages", messagesMap);
       setMessages(messagesMap.get(selectedPerson) || []); // Use an empty array as default
+    }else{
+      setMessages([]);
     }
     setMessageRecipient(selectedPerson);
   }, [selectedPerson, messagesMap]);
