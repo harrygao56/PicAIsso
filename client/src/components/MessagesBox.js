@@ -79,7 +79,7 @@ function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelected
   }, [messages]);
 
   return (
-    <div className="messages-box" style={{ display: 'flex', flexDirection: 'column' }}>
+    <div className="messages-box" style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'white' }}>
       {/* Messages list should scroll if there are too many messages */}
       {messages.length === 0 && (
         <div style={{ padding: '10px' }}>
@@ -88,11 +88,11 @@ function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelected
             onChange={(e) => setMessageRecipient(e.target.value)}
             placeholder="Enter recipient's username"
             style={{
-              width: '100%',
+              width: '98%',
               padding: '8px',
               fontSize: '16px',
               border: '1px solid #ccc',
-              borderRadius: '8px'
+              borderRadius: '10px'
             }}
           />
         </div>

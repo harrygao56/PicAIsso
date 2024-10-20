@@ -88,7 +88,8 @@ const styles = {
   messagesBox: {
     flex: 1,  // Messages box takes the remaining 70% of the parent width
     overflowY: 'auto',  // Enable vertical scrolling
-    maxHeight: 'calc(100vh - 100px)',  // Ensure it doesn't exceed the viewport height minus the header
+    maxHeight: 'calc(100vh - 50px)',  // Ensure it doesn't exceed the viewport height minus the header
+    background: 'white'
   },
 };
 
