@@ -51,12 +51,18 @@ const useMessages = () => {
         // Sort people by the timestamp of their most recent message
         const sortedPeople = [...messageMap.entries()]
           .sort((a, b) => {
-            const latestMessageA = a[1][a[1].length - 1].timestamp;
-            const latestMessageB = b[1][b[1].length - 1].timestamp;
-            return new Date(latestMessageB) - new Date(latestMessageA);
+            const latestMessageA = a[1].reduce((latest, message) => {
+              return new Date(message.timestamp) > new Date(latest.timestamp) ? message : latest;
+            }, a[1][0]);
+
+            const latestMessageB = b[1].reduce((latest, message) => {
+              return new Date(message.timestamp) > new Date(latest.timestamp) ? message : latest;
+            }, b[1][0]);
+
+            return new Date(latestMessageB.timestamp) - new Date(latestMessageA.timestamp);
           })
           .map(entry => entry[0]);  // Extract just the usernames after sorting
-          console.log(sortedPeople);
+        console.log(sortedPeople);
         // Convert the Map to an object to use in state
         setPeople(sortedPeople);
         setMessageMap(Object.fromEntries(messageMap));  // Convert Map to a plain object
@@ -106,12 +112,18 @@ const useMessages = () => {
         // Sort people by the timestamp of their most recent message
         const sortedPeople = [...messageMap.entries()]
           .sort((a, b) => {
-            const latestMessageA = a[1][a[1].length - 1].timestamp;
-            const latestMessageB = b[1][b[1].length - 1].timestamp;
-            return new Date(latestMessageB) - new Date(latestMessageA);
+            const latestMessageA = a[1].reduce((latest, message) => {
+              return new Date(message.timestamp) > new Date(latest.timestamp) ? message : latest;
+            }, a[1][0]);
+
+            const latestMessageB = b[1].reduce((latest, message) => {
+              return new Date(message.timestamp) > new Date(latest.timestamp) ? message : latest;
+            }, b[1][0]);
+
+            return new Date(latestMessageB.timestamp) - new Date(latestMessageA.timestamp);
           })
           .map(entry => entry[0]);  // Extract just the usernames after sorting
-          console.log(sortedPeople);
+        console.log(sortedPeople);
         // Convert the Map to an object to use in state
         setPeople(sortedPeople);
         setMessageMap(Object.fromEntries(messageMap));  // Convert Map to a plain object
