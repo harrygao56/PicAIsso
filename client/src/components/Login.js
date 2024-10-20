@@ -57,16 +57,17 @@ function Login({ setIsAuthenticated }) {
       fontSize: '16px',
       border: '1px solid #ccc',
       borderRadius: '4px',
-      width: '100%'
+      width: '95%'
     },
     button: {
       padding: '10px 20px',
       fontSize: '16px',
       color: '#fff',
-      backgroundColor: '#007bff',
+      backgroundColor: 'rgb(45, 45, 45)',
       border: 'none',
       borderRadius: '4px',
-      cursor: 'pointer'
+      cursor: 'pointer',
+      fontSize: '1rem',
     },
     register: {
       padding: '10px 20px',
@@ -74,7 +75,7 @@ function Login({ setIsAuthenticated }) {
       width: '100%',
       fontSize: '16px',
       color: '#fff',
-      backgroundColor: '#007bff',
+      backgroundColor: 'rgb(45, 45, 45)',
       border: 'none',
       borderRadius: '4px',
       cursor: 'pointer'
