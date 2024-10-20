@@ -1,6 +1,6 @@
 import React from 'react';
 import MessageSelect from './MessageSelect'; // Make sure the path is correct
-import { MessageCirclePlus } from 'lucide-react';
+
 function SideBar({ messageMap, people = [], onSelectPerson, selectedPerson }) {
   return (
     <div className="sidebar">
@@ -12,7 +12,6 @@ function SideBar({ messageMap, people = [], onSelectPerson, selectedPerson }) {
       />
       {people.map((person) => {
         const messages = messageMap[person] || [];
-        console.log("messages", messages);
         const lastMessage = messages[0];
         return (
           <MessageSelect 
