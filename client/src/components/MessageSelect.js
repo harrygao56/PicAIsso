@@ -71,35 +71,41 @@ function MessageSelect({ personName, lastMessage, lastMessageTimestamp, onSelect
       }}
       onClick={() => onSelectPerson(personName)}
     >
-      {renderProfileIcon()}
-      <div style={{ marginLeft: '10px', flex: 1 }}>
-        <div style={{ 
-          fontWeight: 'bold',
-          marginBottom: '5px'
-        }}>
-          {personName}
-        </div>
-        <div style={{ 
-          fontSize: '0.9em', 
-          color: '#666', 
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <div style={{ flex: 1, overflow: 'hidden' }}>
-            <span>{lastMessage ? truncateMessage(lastMessage.content) : '\u00A0'}</span>
+      {personName === "Message to new user" ? (
+        <MessageCirclePlus style={{alignSelf: 'center' }}/>
+      ) : (
+        <>
+          {renderProfileIcon()}
+          <div style={{ marginLeft: '10px', flex: 1 }}>
+            <div style={{ 
+              fontWeight: 'bold',
+              marginBottom: '5px'
+            }}>
+              {personName}
+            </div>
+            <div style={{ 
+              fontSize: '0.9em', 
+              color: '#666', 
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <div style={{ flex: 1, overflow: 'hidden' }}>
+                <span>{lastMessage ? truncateMessage(lastMessage.content) : '\u00A0'}</span>
+              </div>
+              <div style={{ marginLeft: '10px', textAlign: 'right' }}>
+                <span style={{ fontSize: '0.8em', color: '#999' }}>
+                  {lastMessageTimestamp ? new Date(lastMessageTimestamp).toLocaleString() : '\u00A0'}
+                </span>
+              </div>
+            </div>
           </div>
-          <div style={{ marginLeft: '10px', textAlign: 'right' }}>
-            <span style={{ fontSize: '0.8em', color: '#999' }}>
-              {lastMessageTimestamp ? new Date(lastMessageTimestamp).toLocaleString() : '\u00A0'}
-            </span>
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }
