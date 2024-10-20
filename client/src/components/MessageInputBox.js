@@ -47,10 +47,22 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
 
         const data = await response.json();
         setClassification(data.classification);
+        console.log(data.classification);
         if (data.classification === "none"){
-          setLoadingImageGeneration(false);
-          setPromptAnswered(true);
-          handleSubmit();
+          const messageData = {
+            content: message.trim(),
+            recipient_username: messageRecipient,
+            image_url: imageUrl || null,
+          };
+
+          // Send the message via WebSocket
+          await sendMessage(messageData);
+          
+          // Clear the message and imageUrl after sending
+          setImage(null);
+          setMessage('');
+          setImageUrl(null);
+          setPromptAnswered(false);
         }else{
           setShowPopup(true);
         }
