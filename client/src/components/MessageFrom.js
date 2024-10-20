@@ -4,36 +4,55 @@ function MessageFrom({ message }) {
   return (
     <div 
       style={{ 
-        backgroundColor: '#e1ffc7', 
-        padding: '10px 20px',
-        borderRadius: '15px',
-        maxWidth: '80%',
-        margin: '10px',
-        alignSelf: 'flex-start',
-        display: 'inline-block',
-        boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
+        display: 'flex',
+        justifyContent: 'flex-start',
+        marginBottom: '15px',
+        paddingLeft: '10px',
       }}
     >
-      <strong style={{ fontSize: '1.1em' }}>{message.sender.username}:</strong>
-      <p style={{ fontSize: '1.05em', marginTop: '8px' }}>{message.content}</p>
-      {message.image_url && (
-        <div>
-          <img 
-            src={message.image_url} 
-            alt="Message attachment" 
-            style={{ 
-              maxWidth: '400px', 
-              maxHeight: '600px',
-              objectFit: 'contain', 
-              marginTop: '5px',
-              borderRadius: '10px'
-            }} 
-          />
-        </div>
-      )}
-      <small style={{ display: 'block', marginTop: '10px', textAlign: 'left' }}>
-        {new Date(message.timestamp).toLocaleString()}
-      </small>
+      <div
+        style={{ 
+          backgroundColor: '#F0F0F0',
+          padding: '12px 18px',
+          borderRadius: '18px 18px 18px 0',
+          maxWidth: '70%',
+          boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+          position: 'relative',
+        }}
+      >
+        <p style={{ 
+          fontSize: '1.05em', 
+          margin: '0 0 8px 0',
+          lineHeight: '1.4',
+          color: '#303030',
+          wordWrap: 'break-word',
+        }}>
+          {message.content}
+        </p>
+        {message.image_url && (
+          <div style={{ marginTop: '10px' }}>
+            <img 
+              src={message.image_url} 
+              alt="Message attachment" 
+              style={{ 
+                width: '100%', 
+                maxHeight: '300px',
+                objectFit: 'cover', 
+                borderRadius: '12px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }} 
+            />
+          </div>
+        )}
+        <small style={{ 
+          display: 'block', 
+          marginTop: '8px', 
+          fontSize: '0.75em',
+          color: '#7C7C7C'
+        }}>
+          {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </small>
+      </div>
     </div>
   );
 }
