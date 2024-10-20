@@ -14,7 +14,7 @@ function Header({ currentUser, onLogout }) {
           throw new Error('Token not found');
         }
 
-        const response = await axios.get('http://localhost:8000/users', {
+        const response = await axios.get(`http://localhost:8000/users/${currentUser}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
