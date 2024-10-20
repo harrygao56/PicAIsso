@@ -26,7 +26,10 @@ function HomeScreen() {
   return (
     <div style={styles.pageContainer}>
       {/* Header */}
-      <Header onLogout={handleLogout} />
+      <Header 
+        currentUser={currentUser}
+        onLogout={handleLogout}
+      />
 
       {/* Main content below header */}
       <div style={styles.container}>
@@ -34,7 +37,7 @@ function HomeScreen() {
         <div style={styles.sidebar}>
           <SideBar
             messageMap={messageMap} 
-          people={people} 
+            people={people} 
             onSelectPerson={handleSelectPerson} 
             selectedPerson={selectedPerson}
           />
