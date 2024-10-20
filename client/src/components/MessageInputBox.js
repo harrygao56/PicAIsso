@@ -5,10 +5,10 @@ import axios from 'axios';
 function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSelectedPerson }) {
   const [message, setMessage] = useState('');
   const [image, setImage] = useState(null);
-  const [showPopup, setShowPopup] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
   const [classificationLoading, setClassificationLoading] = useState(false);
   const [classification, setClassification] = useState("");
-  const [loadingImageGeneration, setLoadingImageGeneration] = useState(true);
+  const [loadingImageGeneration, setLoadingImageGeneration] = useState(false);
   const [loadingMessageSend, setLoadingMessageSend] = useState(false);
 
   // Handle input change
@@ -57,6 +57,7 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
           setClassificationLoading(false);
       } 
   };
+  
     const sendMessage = async () => {
       setLoadingMessageSend(true);
       try {
