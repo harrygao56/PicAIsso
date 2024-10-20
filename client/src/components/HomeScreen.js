@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SideBar from './SideBar';
 import MessagesBox from './MessagesBox';
 import useMessages from '../Hooks/useMessages'; // Adjust the path if needed
@@ -14,7 +14,6 @@ function HomeScreen() {
     localStorage.removeItem("token");
     window.location.reload();  // This will simulate the logout by reloading the page
   };
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PopupBox from './PopupBox';  // Import the PopupBox
 import axios from 'axios';
 
+
 function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSelectedPerson }) {
   const [message, setMessage] = useState('');
   const [image, setImage] = useState(null);
@@ -50,6 +51,7 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
         setClassificationLoading(false);
     } 
 };
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -64,6 +66,7 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
     const sendMessage = async () => {
       try {
         fetchClassification();
+
       } catch (error) {
         console.error('Failed to get classification:', error);
       } finally {
@@ -91,6 +94,7 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
           setLoadingImageGeneration={setLoadingImageGeneration}
           setImageUrl={setImageUrl}
           imageUrl={imageUrl}
+          setShowPopup={setShowPopup}
         />
       )}
 

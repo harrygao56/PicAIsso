@@ -2,8 +2,12 @@ import React from 'react';
 import '../css/PopupBox.css';  // Import the CSS file
 import { useState } from 'react';
 
-function PopupBox({ message,classification, onClose, loadingImageGeneration, setLoadingImageGeneration, setImageUrl, imageUrl }) {
-  
+function PopupBox({ message,classification, loadingImageGeneration, setLoadingImageGeneration, setImageUrl, imageUrl, setShowPopup }) {
+  const onClose = () => {
+    setImageUrl(null);
+    setLoadingImageGeneration(false);
+    setShowPopup(false);
+  };
   const onGenerate = async () => {
     setLoadingImageGeneration(true);
     try {
