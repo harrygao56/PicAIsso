@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile, Form
+from fastapi import FastAPI, Depends, HTTPException, status, File, UploadFile, Form, WebSocket, WebSocketDisconnect
 from sqlalchemy.orm import Session
 from . import models, schemas, database
 from .database import engine
@@ -6,11 +6,12 @@ from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
-from typing import List
+from typing import List, Dict
 from fastapi.middleware.cors import CORSMiddleware
 from .cloud_storage import upload_image_file_to_gcs
 import uuid
 from .services.openai_client import OpenAIClient
+import json
 
 models.Base.metadata.create_all(bind=engine)
 openai_client = OpenAIClient()
@@ -72,6 +73,61 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     if user is None:
         raise credentials_exception
     return user
+
+# WebSocket connections
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: Dict[int, WebSocket] = {}
+
+    async def connect(self, websocket: WebSocket, user_id: int):
+        await websocket.accept()
+        self.active_connections[user_id] = websocket
+
+    def disconnect(self, user_id: int):
+        del self.active_connections[user_id]
+
+    async def send_personal_message(self, message: str, user_id: int):
+        if user_id in self.active_connections:
+            await self.active_connections[user_id].send_text(message)
+
+manager = ConnectionManager()
+
+@app.websocket("/ws/{token}")
+async def websocket_endpoint(websocket: WebSocket, token: str, db: Session = Depends(database.get_db)):
+    try:
+        current_user = await get_current_user(token, db)
+        await manager.connect(websocket, current_user.id)
+        try:
+            while True:
+                data = await websocket.receive_text()
+                message_data = json.loads(data)
+                
+                # Process the received message
+                recipient = db.query(models.User).filter(models.User.username == message_data['recipient']).first()
+                if not recipient:
+                    await websocket.send_text(json.dumps({"error": "Recipient not found"}))
+                    continue
+
+                db_message = models.Message(
+                    content=message_data['content'],
+                    sender_id=current_user.id,
+                    recipient_id=recipient.id
+                )
+                db.add(db_message)
+                db.commit()
+                db.refresh(db_message)
+
+                # Send the message to the recipient if they're connected
+                await manager.send_personal_message(json.dumps({
+                    "sender": current_user.username,
+                    "content": db_message.content,
+                    "timestamp": db_message.timestamp.isoformat()
+                }), recipient.id)
+
+        except WebSocketDisconnect:
+            manager.disconnect(current_user.id)
+    except HTTPException:
+        await websocket.close()
 
 # Routes
 @app.post("/users", response_model=schemas.User)
