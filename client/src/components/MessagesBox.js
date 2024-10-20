@@ -67,13 +67,6 @@ function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelected
       console.log("sending message to server");
       socket.send(JSON.stringify(messageData));
     }
-    const token = localStorage.getItem('token');
-    const response = await axios.post('http://localhost:8000/messages', messageData, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      }
-    });
     
     console.log('Message sent:', response.data);
     
