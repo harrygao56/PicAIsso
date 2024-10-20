@@ -3,13 +3,12 @@ import MessageFrom from './MessageFrom';
 import MessageTo from './MessageTo';
 import MessageInputBox from './MessageInputBox';
 import MessagesBoxHeader from './Header';
-import useClassify from '../Hooks/useClassify';
 
-function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, setSelectedPerson }) {
+function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, setSelectedPerson, messageMap, setMessageMap }) {
   const [messageRecipient, setMessageRecipient] = useState(selectedPerson);
-  const messageInputBoxRef = useRef(null); // Create a ref for MessageInputBox
+  const messageInputBoxRef = useRef(null);
   const [messageInputBoxHeight, setMessageInputBoxHeight] = useState(0);
-  
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     setMessageRecipient(selectedPerson);
@@ -17,20 +16,45 @@ function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, s
 
   useEffect(() => {
     if (messageInputBoxRef.current) {
-      setMessageInputBoxHeight(messageInputBoxRef.current.offsetHeight); // Set the height
+      setMessageInputBoxHeight(messageInputBoxRef.current.offsetHeight);
     }
   }, [messageInputBoxRef.current]);
 
-  console.log(messageRecipient);
+  useEffect(() => {
+    const clientId = localStorage.getItem('client_id');   
+    const ws = new WebSocket(`ws://localhost:8000/ws/${clientId}`);
+    setSocket(ws);
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      console.log("received message from server", message);
+      const sender = message.sender_username;
+      // Append the new message to the messageMap for the sender
+      setMessageMap((prevMessageMap) => {
+        const updatedSenderMessages = [...(prevMessageMap[sender] || []), message];
+        return {
+          ...prevMessageMap,
+          [sender]: updatedSenderMessages,
+        };
+      });
+      // Trigger a re-fetch of messages to ensure parent component is updated
+      refetchMessages();
+    };
+
+    return () => {
+      ws.close();
+    };
+  }, [currentUser.id]);
+
+  const sendMessage = (messageData) => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      console.log("sending message to server");
+      socket.send(JSON.stringify(messageData));
+    }
+  };
 
   return (
-    <div 
-      className="messages-box"
-      style={{
-        display: 'flex',
-        flexDirection: 'column'
-      }}
-    >
+    <div className="messages-box" style={{ display: 'flex', flexDirection: 'column' }}>
       {/* Messages list should scroll if there are too many messages */}
       {messages.length === 0 && (
         <div style={{ padding: '10px' }}>
@@ -39,7 +63,7 @@ function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, s
             onChange={(e) => setMessageRecipient(e.target.value)}
             placeholder="Enter recipient's username"
             style={{
-              width: '98%',
+              width: '100%',
               padding: '8px',
               fontSize: '16px',
               border: '1px solid #ccc',
@@ -95,6 +119,7 @@ function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, s
           messageRecipient={messageRecipient}
           refetchMessages={refetchMessages}
           setSelectedPerson={setSelectedPerson}
+          sendMessage={sendMessage} // Pass the sendMessage function
         />
       </div>
     </div>

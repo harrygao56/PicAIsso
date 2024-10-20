@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../css/PopupBox.css';  // Import the CSS file
-import { X } from 'lucide-react';
-import { Check } from 'lucide-react';
+import { X, Check, RefreshCw } from 'lucide-react';
 
 function PopupBox({ message, classification, loadingImageGeneration, setLoadingImageGeneration, setImageUrl, imageUrl, setShowPopup, imageLoaded, setImageLoaded, image, setImage, setPromptAnswered }) {
+  const [additionalInfo, setAdditionalInfo] = useState('');
+  const [showRegenerateInput, setShowRegenerateInput] = useState(false);
+  const [updatedMessage, setUpdatedMessage] = useState(message);
+
   const onClose = () => {
     setImageUrl(null);
     setLoadingImageGeneration(false);
@@ -42,6 +45,41 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
     setPromptAnswered(true);
   };
 
+  const onRegenerateClick = () => {
+    setShowRegenerateInput(!showRegenerateInput);
+    setAdditionalInfo('');
+  };
+
+  const onRegenerateSubmit = async () => {
+    setLoadingImageGeneration(true);
+    try {
+      const newMessage = updatedMessage + (additionalInfo ? ' ' + additionalInfo : '');
+      setUpdatedMessage(newMessage);
+      console.log("sending updated message and classification to server");
+      console.log(newMessage, classification);
+      const response = await fetch('http://localhost:8000/getImage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          "message": newMessage,
+          "classification": classification
+        }),
+      });
+
+      const data = await response.json();
+      setImageUrl(data.image_url);
+      setLoadingImageGeneration(false);
+      setImageLoaded(true);
+      setShowRegenerateInput(false);
+      setAdditionalInfo('');
+    } catch (error) {
+      console.error('Error regenerating image:', error);
+      setLoadingImageGeneration(false);
+    }
+  };
+
   const styles = {
     popup: {
       padding: '5px',
@@ -51,6 +89,16 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
     },
     popupText: {
       width: '25rem'
+    },
+    regenerateInput: {
+      width: '100%',
+      padding: '10px',
+      marginTop: '10px',
+      borderRadius: '5px',
+      border: '1px solid #ccc',
+      backgroundColor: '#fff',
+      color: '#333',
+      fontSize: '1rem',
     }
   }
 
@@ -58,7 +106,7 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
     <div className="popupContainer" style={styles.popup}>
       {loadingImageGeneration ? (
         <div className="loadingBox">
-          <div className="spinner"></div> {/* Ensure this div is closed */}
+          <div className="spinner"></div>
         </div>
       ) : imageUrl ? (
         <img src={imageUrl} alt="Generated" className="generatedImage" style={{ width: '300px', height: '300px', objectFit: 'cover' }} />
@@ -71,12 +119,31 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
           }
         </span>
         <button onClick={!imageLoaded ? onGenerate : onSetImageLoaded} className="checkmarkButton">
-          <Check style={{ color: 'rgb(230, 230, 230)' }} /> {/* Ensure this button is closed */}
+          <Check style={{ color: 'rgb(230, 230, 230)' }} />
         </button>
         <button onClick={onClose} className="closeButton">
-          <X style={{ color: 'rgb(230, 230, 230)' }}/> {/* Ensure this button is closed */}
+          <X style={{ color: 'rgb(230, 230, 230)' }}/>
+        </button>
+        <button onClick={onRegenerateClick} className="regenerateButton">
+          <RefreshCw style={{ color: 'rgb(230, 230, 230)' }} />
         </button>
       </div>
+      {showRegenerateInput && (
+        <div style={{ marginTop: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <input
+              type="text"
+              value={additionalInfo}
+              onChange={(e) => setAdditionalInfo(e.target.value)}
+              placeholder="Add additional information to change the image"
+              style={styles.regenerateInput}
+            />
+            <button onClick={onRegenerateSubmit} style={styles.regenerateButton}>
+              Regenerate
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
