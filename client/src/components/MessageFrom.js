@@ -4,7 +4,7 @@ function MessageFrom({ message }) {
   return (
     <div 
       style={{ 
-        backgroundColor: '#e1ffc7', 
+        backgroundColor: '#E9E9EE', 
         padding: '10px 20px',
         borderRadius: '15px',
         maxWidth: '80%',
