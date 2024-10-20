@@ -65,6 +65,7 @@ const styles = {
     height: '100vh', // Full viewport height
   },
   container: {
+    top: '100px',
     display: 'flex',
     flex: 1,  // Remaining height after header
   },
@@ -75,7 +76,8 @@ const styles = {
   },
   messagesBox: {
     flex: 1,  // Messages box takes the remaining 70% of the parent width
-    padding: '20px',
+    overflowY: 'auto',  // Enable vertical scrolling
+    maxHeight: 'calc(100vh - 100px)',  // Ensure it doesn't exceed the viewport height minus the header
   },
 };
 
