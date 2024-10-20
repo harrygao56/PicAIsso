@@ -83,9 +83,11 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
   const styles = {
     popup: {
       padding: '5px',
+      paddingTop: '15px',
       borderRadius: '20px',
       backgroundColor: 'rgb(45, 45, 45)',
-      fontSize: '1rem'
+      fontSize: '1rem',
+      marginBottom: '-1rem'
     },
     popupText: {
       width: '25rem'
@@ -109,7 +111,7 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
           <div className="spinner"></div>
         </div>
       ) : imageUrl ? (
-        <img src={imageUrl} alt="Generated" className="generatedImage" style={{ width: '300px', height: '300px', objectFit: 'cover' }} />
+        <img src={imageUrl} alt="Generated" className="generatedImage" style={{ width: '300px', height: '300px', objectFit: 'cover', borderRadius: '10px' }} />
       ) : null}
       <div className="popup">
         <span className="popupText" style={styles.popupText}>
@@ -119,13 +121,13 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
           }
         </span>
         <button onClick={!imageLoaded ? onGenerate : onSetImageLoaded} className="checkmarkButton">
-          <Check style={{ color: 'rgb(230, 230, 230)' }} />
+          <Check style={{ color: 'rgb(230, 230, 230)', marginTop: '5px' }} />
         </button>
         <button onClick={onClose} className="closeButton">
-          <X style={{ color: 'rgb(230, 230, 230)' }}/>
+          <X style={{ color: 'rgb(230, 230, 230)', marginLeft: '-10px', marginTop: '5px'}}/>
         </button>
         <button onClick={onRegenerateClick} className="regenerateButton">
-          <RefreshCw style={{ color: 'rgb(230, 230, 230)' }} />
+          <RefreshCw style={{ color: 'rgb(230, 230, 230)', height: '1.3rem', marginTop: '5px'}}/>
         </button>
       </div>
       {showRegenerateInput && (

@@ -164,8 +164,8 @@ const styles = {
   },
   image: {
     maxWidth: '94%',
-    border: '15px solid  rgb(45, 45, 45)',
-    borderRadius: '20px',
+    border: '15px solid rgb(45, 45, 45)',
+    borderRadius: '20px'
   },
   form: {
     display: 'flex',
