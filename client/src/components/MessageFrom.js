@@ -9,7 +9,7 @@ function MessageFrom({ message }) {
         borderRadius: '15px',
         maxWidth: '80%',
         margin: '10px',
-        alignSelf: 'flex-end',
+        alignSelf: 'flex-start',
         display: 'inline-block',
         boxShadow: '0 2px 5px rgba(0,0,0,0.1)'
       }}
@@ -31,7 +31,7 @@ function MessageFrom({ message }) {
           />
         </div>
       )}
-      <small style={{ display: 'block', marginTop: '10px', textAlign: 'right' }}>
+      <small style={{ display: 'block', marginTop: '10px', textAlign: 'left' }}>
         {new Date(message.timestamp).toLocaleString()}
       </small>
     </div>
