@@ -5,9 +5,10 @@ import axios from 'axios';
 function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSelectedPerson }) {
   const [message, setMessage] = useState('');
   const [image, setImage] = useState(null);
-  const [showPopup, setShowPopup] = useState(true);
-  const [loadingFirstSend, setLoadingFirstSend] = useState(false);
-  const [loadingImageGeneration, setLoadingImageGeneration] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
+  const [classificationLoading, setClassificationLoading] = useState(false);
+  const [classification, setClassification] = useState("");
+  const [loadingImageGeneration, setLoadingImageGeneration] = useState(false);
   const [loadingMessageSend, setLoadingMessageSend] = useState(false);
 
   // Handle input change
@@ -33,6 +34,30 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
       // Add further handling logic for sending the message
     }
     // Send the message to the server
+    const fetchClassification = async () => {
+      setClassificationLoading(true);
+      try {
+          const response = await fetch('YOUR_ENDPOINT_URL', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ message }),
+          });
+
+          const data = await response.json();
+          setClassification(data.classification);
+          if (classification === ""){
+            setClassificationLoading(false);
+          }else{
+            setShowPopup(true);
+          }
+      } catch (error) {
+          console.error('Error fetching classification:', error);
+          setClassificationLoading(false);
+      } 
+  };
+  
     const sendMessage = async () => {
       setLoadingMessageSend(true);
       try {

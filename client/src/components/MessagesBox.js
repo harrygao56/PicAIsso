@@ -48,6 +48,11 @@ function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, s
       )}
       
       <div 
+        ref={(el) => {
+          if (el) {
+            el.scrollTop = el.scrollHeight;
+          }
+        }}
         style={{
           flex: 1,
           overflowY: 'auto',
