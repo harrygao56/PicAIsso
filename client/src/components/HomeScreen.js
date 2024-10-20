@@ -10,7 +10,7 @@ function HomeScreen() {
   const [messagesMap, setMessagesMap] = useState(new Map());  // Initialize messagesMap as a Map
   const [sendingMessageToNewPerson, setSendingMessageToNewPerson] = useState(false); // Corrected useState usage
   const currentUser = localStorage.getItem("username");  // Replace with actual username or logic to retrieve it
-
+  
   useEffect(() => {
     if (messageMap) {
       // Convert messageMap to a Map if it's not already
