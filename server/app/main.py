@@ -22,10 +22,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000"],  # Ensure this matches your frontend's origin
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
 )
 
 # Security
@@ -200,12 +200,14 @@ async def get_image(
     message = request.message
     classification = request.classification
     prompt = ""
+    prompt = openai_client.generate_prompt(message, classification)
     if classification == "illustration":
-        prompt = openai_client.generate_prompt(message, classification)
         image_url = openai_client.generate_image(prompt)
     elif classification == "diagram":
-        prompt = openai_client.generate_prompt(message, classification)
         image_url = openai_client.generate_diagram(prompt)
+    elif classification == "flyer":
+        image_url = openai_client.generate_image(prompt)
+        
     return {"image_url": image_url}
 
 
