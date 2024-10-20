@@ -77,12 +77,11 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
           };
 
           // Send the message via WebSocket
-          sendMessage(messageData);
+          await sendMessage(messageData);
           
           // Clear the message and imageUrl after sending
           setMessage('');
           setImageUrl(null);
-          refetchMessages();
         }
       } catch (error) {
         console.error('Failed to send message:', error);

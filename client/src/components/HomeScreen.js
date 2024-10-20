@@ -7,8 +7,18 @@ import Header from './Header';  // Import the new Header component
 function HomeScreen() {
   const { people, messageMap, setMessageMap, loading, error, refetchMessages } = useMessages();
   const [selectedPerson, setSelectedPerson] = useState(null);
+  const [messagesMap, setMessagesMap] = useState(new Map());  // Initialize messagesMap as a Map
   const [sendingMessageToNewPerson, setSendingMessageToNewPerson] = useState(false); // Corrected useState usage
   const currentUser = localStorage.getItem("username");  // Replace with actual username or logic to retrieve it
+
+  useEffect(() => {
+    if (messageMap) {
+      // Convert messageMap to a Map if it's not already
+      setMessagesMap(new Map(Object.entries(messageMap)));
+    }
+  }, [messageMap]);
+
+
   const handleLogout = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("token");
@@ -21,6 +31,7 @@ function HomeScreen() {
     setSelectedPerson(person);
     console.log('Selected person:', person);
   };
+
 
   return (
     <div style={styles.pageContainer}>
@@ -45,13 +56,12 @@ function HomeScreen() {
         {/* Messages Box */}
         <div style={styles.messagesBox}>
             <MessagesBox 
-              messages={selectedPerson && messageMap[selectedPerson] ? messageMap[selectedPerson] : []}
               currentUser={currentUser}
               selectedPerson={selectedPerson}
               refetchMessages={refetchMessages}  // Pass the refetch function
               setSelectedPerson={setSelectedPerson}
-              messageMap={messageMap}
-              setMessageMap={setMessageMap}
+              messageMap={messagesMap}
+              setMessageMap={setMessagesMap}
             />
         </div>
       </div>
