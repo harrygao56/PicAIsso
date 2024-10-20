@@ -1,12 +1,13 @@
 from openai import AzureOpenAI
 import os
 from dotenv import load_dotenv
+import requests
 
+
+load_dotenv()
 
 class OpenAIClient:
     def __init__(self):
-        load_dotenv()
-
         self.client = AzureOpenAI(
             api_key=os.getenv("AZURE_OPENAI_API_KEY"),  
             api_version="2024-07-01-preview",
@@ -17,8 +18,7 @@ class OpenAIClient:
         print( "classifying text")
         print(text)
         prompt = """
-        You are a specialized algorithm that classifies text messages 
-        so that it can be passed to an appropriate image generation model.
+        You are a specialized algorithm that classifies text messages so that it can be passed to an appropriate image generation model.
 
         You will be given a text message and you will need to classify it into one of the following categories:
         - none
@@ -36,13 +36,18 @@ class OpenAIClient:
         """
         
         response = self.client.chat.completions.create(
-            model="gpt4o",
+            model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": prompt},
                 {"role": "user", "content": text}
             ]
         ).choices[0].message.content
+<<<<<<< Updated upstream:server/app/services/openai_client.py
 
+=======
+        if response not in ["none", "illustration", "diagram", "flyer"]:
+            return self.classify_text(text)
+>>>>>>> Stashed changes:server/app/services/openai-client.py
         return response
     
     def generate_flyer_prompt(self, text: str) -> str:
@@ -59,4 +64,11 @@ class OpenAIClient:
         return response.data[0].url
     
     def generate_diagram(self, prompt: str) -> str:
-        return ""
+        payload = { "text": prompt }
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json",
+            "authorization": "Bearer " + os.getenv("ERASER_API_TOKEN")
+        }
+        response = requests.post(os.getenv("ERASER_API_URL"), json=payload, headers=headers)
+        return response.text
