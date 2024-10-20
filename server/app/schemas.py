@@ -17,6 +17,7 @@ class User(BaseModel):
 
 class MessageCreate(BaseModel):
     content: str
+    image_url: Optional[str] = None
     recipient_username: str
 
 class Message(BaseModel):

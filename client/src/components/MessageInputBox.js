@@ -22,8 +22,12 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImage(URL.createObjectURL(file));  // Display image preview
-      setShowPopup(true);  // Show the popup when image is selected
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageUrl(reader.result);  // Set the image URL here
+        setShowPopup(true);  // Show the popup when image is selected
+      };
+      reader.readAsDataURL(file);
     }
   };
   const fetchClassification = async () => {
@@ -51,27 +55,50 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
     } 
 };
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (message.trim() || image) {
-      console.log('Message:', message);
-      console.log('Image:', image);
-      // Add further handling logic for sending the message
-    }
-    // Send the message to the server
-
-  
-    const sendMessage = async () => {
+    if (message.trim() || imageUrl) {
+      setLoadingMessageSend(true);
+      
       try {
-        fetchClassification();
+        // First, get the classification
+        await fetchClassification();
+        
+        // Prepare the message data
+        const messageData = {
+          content: message.trim(),
+          recipient_username: messageRecipient,
+        };
+
+        // Add image_url to messageData if it exists
+        if (imageUrl) {
+          messageData.image_url = imageUrl;
+        }
+        
+        // Send the message to the server
+        const token = localStorage.getItem('token');
+        const response = await axios.post('http://localhost:8000/messages', messageData, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        console.log('Message sent:', response.data);
+        
+        // Clear the message and imageUrl after sending
+        setMessage('');
+        setImageUrl(null);
+        setShowPopup(false);
+        
+        // Refresh the messages
+        refetchMessages();
       } catch (error) {
-        console.error('Failed to get classification:', error);
+        console.error('Failed to send message:', error);
       } finally {
+        setLoadingMessageSend(false);
       }
-    };
-    sendMessage();
-    setImage(null);  // Remove image preview
-    setShowPopup(false);  // Close the popup on submit
+    }
   };
 
   // Handle popup close
