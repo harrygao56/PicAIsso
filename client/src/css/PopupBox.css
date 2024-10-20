@@ -69,7 +69,13 @@
     border: 1px solid #ccc;
     border-radius: 10px;
   }
-  
+  .regenerateButton {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+  }
   /* Spinner inside loading box */
   .spinner {
     width: 50px;

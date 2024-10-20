@@ -131,7 +131,7 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
         </button>
         {imageGenerated && (
           <button onClick={onRegenerateClick} className="regenerateButton">
-            <Pencil style={{ color: 'rgb(230, 230, 230)', height: '1.2rem', marginTop: '5px'}}/>
+            <Pencil style={{ color: 'rgb(230, 230, 230)', height: '1.2rem', marginTop: '5px', backgroundColor: '#333' }} />
           </button>
         )}
       </div>
