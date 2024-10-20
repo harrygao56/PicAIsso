@@ -5,7 +5,7 @@ import useMessages from '../Hooks/useMessages'; // Adjust the path if needed
 import Header from './Header';  // Import the new Header component
 
 function HomeScreen() {
-  const { people, messageMap, setMessageMap, loading, error, refetchMessages } = useMessages();
+  const { people, messageMap, loading, error, refetchMessages } = useMessages();
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [messagesMap, setMessagesMap] = useState(new Map());  // Initialize messagesMap as a Map
   const [sendingMessageToNewPerson, setSendingMessageToNewPerson] = useState(false); // Corrected useState usage
@@ -46,7 +46,7 @@ function HomeScreen() {
         {/* Sidebar */}
         <div style={styles.sidebar}>
           <SideBar
-            messageMap={messagesMap} 
+            messagesMap={messagesMap} 
             people={people} 
             onSelectPerson={handleSelectPerson} 
             selectedPerson={selectedPerson}
@@ -60,8 +60,8 @@ function HomeScreen() {
               selectedPerson={selectedPerson}
               refetchMessages={refetchMessages}  // Pass the refetch function
               setSelectedPerson={setSelectedPerson}
-              messageMap={messagesMap}
-              setMessageMap={setMessagesMap}
+              messagesMap={messagesMap}
+              setMessagesMap={setMessagesMap}
             />
         </div>
       </div>

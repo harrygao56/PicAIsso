@@ -5,7 +5,7 @@ import MessageInputBox from './MessageInputBox';
 import MessagesBoxHeader from './Header';
 import axios from 'axios';
 
-function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelectedPerson, messageMap, setMessageMap }) {
+function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelectedPerson, messagesMap, setMessagesMap }) {
   // Initialize messageMap as a Map if it's not already
   const [messages, setMessages] = useState([]);
   const [messageRecipient, setMessageRecipient] = useState(selectedPerson);
@@ -14,19 +14,19 @@ function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelected
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    if (!messageMap || !(messageMap instanceof Map)) {
-      setMessageMap(new Map());
+    if (!messagesMap || !(messagesMap instanceof Map)) {
+      setMessagesMap(new Map());
     }
-  }, [messageMap]);
+  }, [messagesMap]);
 
   useEffect(() => {
     if (selectedPerson) {
       console.log("setting for selectedPerson", selectedPerson);
-      console.log("setting messages", messageMap);
-      setMessages(messageMap.get(selectedPerson) || []); // Use an empty array as default
+      console.log("setting messages", messagesMap);
+      setMessages(messagesMap.get(selectedPerson) || []); // Use an empty array as default
     }
     setMessageRecipient(selectedPerson);
-  }, [selectedPerson, messageMap]);
+  }, [selectedPerson, messagesMap]);
   useEffect(() => {
     console.log("messages", messages);
   }, [messages]);
@@ -47,7 +47,7 @@ function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelected
       const sender = message.sender.username;
       const recipient = message.recipient.username;
       // Ensure prevMap is a Map
-      setMessageMap(prevMap => {
+      setMessagesMap(prevMap => {
         const newMap = new Map(prevMap instanceof Map ? prevMap : Object.entries(prevMap)); // Convert object to Map if needed
         const key = sender === currentUser ? recipient : sender;
         const existingMessages = newMap.get(key) || [];
