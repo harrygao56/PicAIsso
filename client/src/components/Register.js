@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';  // Import the new Header component
+import { ImageUp } from 'lucide-react';
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -66,20 +67,40 @@ function Register() {
     input: {
       padding: '10px',
       borderRadius: '4px',
-      border: '1px solid #ddd'
+      border: '1px solid #ddd',
+      fontSize: '1rem'
     },
     button: {
       padding: '10px',
-      backgroundColor: '#007bff',
+      backgroundColor: 'rgb(45, 45, 45)',
       color: 'white',
       border: 'none',
       borderRadius: '4px',
-      cursor: 'pointer'
+      cursor: 'pointer',
+      fontSize: '1rem'
     },
     error: {
       color: 'red',
       marginTop: '10px'
-    }
+    },
+    label: {
+      display: 'flex',
+      alignItems: 'center',
+      cursor: 'pointer',
+      padding: '8.5px',
+      borderRadius: '4px',
+      border: '1px solid #ddd',
+      fontSize: '1rem',
+      backgroundColor: 'white'
+    },
+    fileupload: {
+      display: 'none', // Hide the default file input
+    },
+    icon: {
+      marginRight: '8px', // Space between icon and text
+      width: '24px', // Adjust size as needed
+      height: '24px', // Adjust size as needed
+    },
   };
 
   return (
@@ -103,12 +124,16 @@ function Register() {
           onChange={(e) => setPassword(e.target.value)}
           style={styles.input}
         />
+        <label style={styles.label}>
         <input
           type="file"
           accept="image/*"
           onChange={handleFileChange}
-          style={styles.input}
+          style={styles.fileupload}
         />
+        <ImageUp style={styles.icon} />
+        <span style={styles.text}>Upload Profile Picture</span>
+      </label>
         <button type="submit" style={styles.button}>Register</button>
       </form>
       {errorMessage && <p style={styles.error}>{errorMessage}</p>}

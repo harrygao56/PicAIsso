@@ -55,7 +55,7 @@ function Header({ currentUser, onLogout }) {
 
   return (
     <div style={styles.header}>
-      <h2 style={styles.text}>PicAIsso</h2>
+      <h2 style={styles.picasso}>pic.ai.sso</h2>
 
       {currentUser && (
         <div style={styles.profileContainer}>
@@ -80,7 +80,7 @@ const styles = {
   header: {
     height: '75px',
     width: '100%',
-    backgroundColor: '#1c1c1c',
+    backgroundColor: 'rgb(40, 40, 40)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -144,6 +144,12 @@ const styles = {
   defaultIcon: {
     fontSize: '24px',
     color: '#fff',
+  },
+  picasso: {
+    fontFamily: 'Lucida Handwriting, cursive',
+    fontSize: '2rem',
+    letterSpacing: '0.1rem',
+    color: '#fff'
   }
 };
 
