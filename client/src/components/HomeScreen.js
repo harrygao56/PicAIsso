@@ -46,7 +46,7 @@ function HomeScreen() {
         {/* Sidebar */}
         <div style={styles.sidebar}>
           <SideBar
-            messageMap={messageMap} 
+            messageMap={messagesMap} 
             people={people} 
             onSelectPerson={handleSelectPerson} 
             selectedPerson={selectedPerson}
