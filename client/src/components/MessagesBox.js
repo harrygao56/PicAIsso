@@ -68,7 +68,6 @@ function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelected
       socket.send(JSON.stringify(messageData));
     }
     
-    console.log('Message sent:', response.data);
     
   };
 
