@@ -37,47 +37,47 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
     setClassificationLoading(true);
     console.log(message);
     try {
-        const response = await fetch('http://localhost:8000/classify', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ message }),
-        });
+      const response = await fetch('http://localhost:8000/classify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message }),
+      });
 
-        const data = await response.json();
-        setClassification(data.classification);
-        console.log(data.classification);
-        if (data.classification === "none"){
-          const messageData = {
-            content: message.trim(),
-            recipient_username: messageRecipient,
-            image_url: imageUrl || null,
-          };
+      const data = await response.json();
+      setClassification(data.classification);
+      console.log(data.classification);
+      if (data.classification === "none") {
+        const messageData = {
+          content: message.trim(),
+          recipient_username: messageRecipient,
+          image_url: imageUrl || null,
+        };
 
-          // Send the message via WebSocket
-          await sendMessage(messageData);
-          
-          // Clear the message and imageUrl after sending
-          setImage(null);
-          setMessage('');
-          setImageUrl(null);
-          setPromptAnswered(false);
-        }else{
-          setShowPopup(true);
-        }
+        // Send the message via WebSocket
+        await sendMessage(messageData);
+
+        // Clear the message and imageUrl after sending
+        setImage(null);
+        setMessage('');
+        setImageUrl(null);
+        setPromptAnswered(false);
+      } else {
+        setShowPopup(true);
+      }
     } catch (error) {
-        console.error('Error fetching classification:', error);
+      console.error('Error fetching classification:', error);
     } finally {
       setClassificationLoading(false);
     }
-};
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (message.trim() || imageUrl) {
       setLoadingMessageSend(true);
-      
+
       try {
         if (!promptAnswered) {
           await fetchClassification();
@@ -89,7 +89,7 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
           };
 
           await sendMessage(messageData);
-          
+
           setImage(null);
           setMessage('');
           setImageUrl(null);
@@ -111,7 +111,7 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
   return (
     <div style={styles.container}>
       {showPopup && (
-        <PopupBox 
+        <PopupBox
           message={message}
           classification={classification}
           onClose={handleClosePopup}
@@ -145,7 +145,7 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
         />
 
         <button type="submit" style={styles.sendButton}>
-        <Send style={{ color: 'rgb(230, 230, 230)', marginTop: '5px', marginRight: '5px'}}/>
+          <Send style={{ color: 'rgb(230, 230, 230)', marginTop: '5px', marginRight: '5px' }} />
         </button>
       </form>
     </div>
@@ -169,12 +169,18 @@ const styles = {
     display: 'flex',
     marginBottom: '10px',
     textAlign: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    width: '100%',
+    // maxHeight: '500px',
+    overflow: 'auto',
   },
   image: {
-    maxWidth: '94%',
+    maxWidth: '100%',
+    maxHeight: '100%',
+    objectFit: 'contain', // Ensures the image fits within the container
     border: '15px solid rgb(45, 45, 45)',
-    borderRadius: '20px'
+    borderRadius: '20px',
+    boxSizing: 'border-box', // Includes border in the element's total width and height
   },
   form: {
     display: 'flex',

@@ -37,9 +37,9 @@ function MessageTo({ message }) {
               src={message.image_url} 
               alt="Message attachment" 
               style={{ 
-                width: '100%', 
-                maxHeight: '300px',
-                objectFit: 'cover', 
+                width: '100%',
+                objectFit: 'contain',
+                maxHeight: '600px',
                 borderRadius: '12px',
                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
               }} 
