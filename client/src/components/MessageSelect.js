@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { MessageCirclePlus } from 'lucide-react'; // Import the icon
 
 function MessageSelect({ personName, lastMessage, lastMessageTimestamp, onSelectPerson, selectedPerson }) {
   const [profilePhotoUrl, setProfilePhotoUrl] = useState(null);

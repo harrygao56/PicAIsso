@@ -234,7 +234,19 @@ async def get_user_by_username(
     }
 
 @app.post("/classify")
-async def classify_message(message: str):
-    return {"classification": openai_client.classify_text(message)}
-
+async def classify_message(
+    request: schemas.MessageClassifyRequest,  # Assuming you have a schema for this
+):
+    # Extract the message from the request
+    # message = request.message
     
+    # # Use the OpenAI client to classify the message
+    # classification_result = openai_client.classify_text(message)
+    # print(classification_result)
+    return {"classification": "illustration"}
+
+@app.post("/getImage")
+async def get_image(
+    request: schemas.MessageGetImageRequest,
+):
+    return {"image_url": "https://i.natgeofe.com/n/4f5aaece-3300-41a4-b2a8-ed2708a0a27c/domestic-dog_thumb_square.jpg"}

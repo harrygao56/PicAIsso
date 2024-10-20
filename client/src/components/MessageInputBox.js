@@ -10,6 +10,8 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
   const [classification, setClassification] = useState("");
   const [loadingImageGeneration, setLoadingImageGeneration] = useState(false);
   const [loadingMessageSend, setLoadingMessageSend] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
+
 
   // Handle input change
   const handleMessageChange = (e) => {
@@ -24,7 +26,30 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
       setShowPopup(true);  // Show the popup when image is selected
     }
   };
+  const fetchClassification = async () => {
+    setClassificationLoading(true);
+    console.log(message);
+    try {
+        const response = await fetch('http://localhost:8000/classify', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message }),
+        });
 
+        const data = await response.json();
+        setClassification(data.classification);
+        if (data.classification === "none"){
+          setLoadingImageGeneration(false);
+        }else{
+          setShowPopup(true);
+        }
+    } catch (error) {
+        console.error('Error fetching classification:', error);
+        setClassificationLoading(false);
+    } 
+};
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,30 +59,7 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
       // Add further handling logic for sending the message
     }
     // Send the message to the server
-    const fetchClassification = async () => {
-      setClassificationLoading(true);
-      console.log(message);
-      try {
-          const response = await fetch('http://localhost:8000/classify', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ message }),
-          });
 
-          const data = await response.json();
-          setClassification(data.classification);
-          if (classification === ""){
-            setClassificationLoading(false);
-          }else{
-            setShowPopup(true);
-          }
-      } catch (error) {
-          console.error('Error fetching classification:', error);
-          setClassificationLoading(false);
-      } 
-  };
   
     const sendMessage = async () => {
       try {
@@ -67,9 +69,7 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
       } finally {
       }
     };
-
     sendMessage();
-    setMessage('');  // Clear message input
     setImage(null);  // Remove image preview
     setShowPopup(false);  // Close the popup on submit
   };
@@ -85,9 +85,12 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
       {showPopup && (
         <PopupBox 
           message="Image uploaded successfully!" 
+          classification={classification}
           onClose={handleClosePopup}
           loadingImageGeneration={loadingImageGeneration}
           setLoadingImageGeneration={setLoadingImageGeneration}
+          setImageUrl={setImageUrl}
+          imageUrl={imageUrl}
         />
       )}
 

@@ -57,19 +57,21 @@ function Header({ currentUser, onLogout }) {
     <div style={styles.header}>
       <h2 style={styles.text}>PicAIsso</h2>
 
-      <div style={styles.profileContainer}>
-        <div onClick={toggleDropdown}>
-          {renderProfileIcon()}
-        </div>
-
-        {showDropdown && (
-          <div style={styles.dropdownMenu}>
-            <button style={styles.dropdownItem} onClick={handleLogout}>
-              Logout
-            </button>
+      {currentUser && (
+        <div style={styles.profileContainer}>
+          <div onClick={toggleDropdown}>
+            {renderProfileIcon()}
           </div>
-        )}
-      </div>
+
+          {showDropdown && (
+            <div style={styles.dropdownMenu}>
+              <button style={styles.dropdownItem} onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

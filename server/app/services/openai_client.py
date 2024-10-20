@@ -14,6 +14,8 @@ class OpenAIClient:
         )
 
     def classify_text(self, text: str) -> str:
+        print( "classifying text")
+        print(text)
         prompt = """
         You are a specialized algorithm that classifies text messages 
         so that it can be passed to an appropriate image generation model.
@@ -41,8 +43,6 @@ class OpenAIClient:
             ]
         ).choices[0].message.content
 
-        if response != "none" or response != "illustration" or response != "diagram" or response != "flyer":
-            return self.classify_text()
         return response
     
     def generate_flyer_prompt(self, text: str) -> str:

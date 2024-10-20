@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Header from './Header';  // Import the new Header component
 
 function Register() {
   const [username, setUsername] = useState('');
@@ -45,6 +46,7 @@ function Register() {
     container: {
       maxWidth: '400px',
       margin: '0 auto',
+      marginTop: '10px',
       padding: '20px',
       border: '1px solid #ddd',
       borderRadius: '8px',
@@ -81,7 +83,10 @@ function Register() {
   };
 
   return (
-    <div style={styles.container}>
+    <div>
+      {/* Header */}
+      <Header/>
+      <div style={styles.container}>
       <h2 style={styles.heading}>Register</h2>
       <form onSubmit={handleSubmit} style={styles.form}>
         <input
@@ -108,6 +113,8 @@ function Register() {
       </form>
       {errorMessage && <p style={styles.error}>{errorMessage}</p>}
     </div>
+    </div>
+    
   );
 }
 
