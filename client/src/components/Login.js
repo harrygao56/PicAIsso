@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Header from './Header';  // Import the new Header component
 
 function Login({ setIsAuthenticated }) {
   const [username, setUsername] = useState('');
@@ -34,6 +35,7 @@ function Login({ setIsAuthenticated }) {
     container: {
       maxWidth: '400px',
       margin: '0 auto',
+      marginTop: '10px',
       padding: '20px',
       border: '1px solid #ddd',
       borderRadius: '8px',
@@ -66,6 +68,17 @@ function Login({ setIsAuthenticated }) {
       borderRadius: '4px',
       cursor: 'pointer'
     },
+    register: {
+      padding: '10px 20px',
+      marginTop: '10px',
+      width: '100%',
+      fontSize: '16px',
+      color: '#fff',
+      backgroundColor: '#007bff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer'
+    },
     buttonHover: {
       backgroundColor: '#0056b3'
     },
@@ -77,7 +90,10 @@ function Login({ setIsAuthenticated }) {
   };
 
   return (
-    <div style={styles.container}>
+    <div>
+      {/* Header */}
+      <Header/>
+      <div style={styles.container}>
       <h2 style={styles.heading}>Login</h2>
       <form onSubmit={handleSubmit} style={styles.form}>
         <input
@@ -100,6 +116,15 @@ function Login({ setIsAuthenticated }) {
       </form>
 
       {errorMessage && <p style={styles.errorMessage}>{errorMessage}</p>}
+
+      <button 
+        style={styles.register} 
+        onClick={() => history('/register')}
+      >
+        Register New User
+      </button>
+
+      </div>
     </div>
   );
 }
