@@ -6,6 +6,7 @@ import Header from './Header';  // Import the new Header component
 
 function HomeScreen() {
   const { people, messageMap, loading, error, refetchMessages } = useMessages();
+  const [peopleList, setPeopleList] = useState([]);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [messagesMap, setMessagesMap] = useState(new Map());  // Initialize messagesMap as a Map
   const [sendingMessageToNewPerson, setSendingMessageToNewPerson] = useState(false); // Corrected useState usage
@@ -17,7 +18,12 @@ function HomeScreen() {
       setMessagesMap(new Map(Object.entries(messageMap)));
     }
   }, [messageMap]);
-
+  useEffect(()=>{
+    if (people){
+      console.log("peopleList updated", people);
+      setPeopleList(people);
+    }
+  }, [people]);
 
   const handleLogout = () => {
     localStorage.removeItem("username");
@@ -47,7 +53,7 @@ function HomeScreen() {
         <div style={styles.sidebar}>
           <SideBar
             messagesMap={messagesMap} 
-            people={people} 
+            peopleList={peopleList} 
             onSelectPerson={handleSelectPerson} 
             selectedPerson={selectedPerson}
           />
@@ -62,6 +68,8 @@ function HomeScreen() {
               setSelectedPerson={setSelectedPerson}
               messagesMap={messagesMap}
               setMessagesMap={setMessagesMap}
+              peopleList={peopleList}
+              setPeopleList={setPeopleList}
             />
         </div>
       </div>
