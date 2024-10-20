@@ -10,9 +10,10 @@ from typing import List
 from fastapi.middleware.cors import CORSMiddleware
 from .cloud_storage import upload_image_file_to_gcs
 import uuid
+from .services.openai_client import OpenAIClient
 
 models.Base.metadata.create_all(bind=engine)
-
+openai_client = OpenAIClient()
 app = FastAPI()
 
 app.add_middleware(
@@ -160,3 +161,9 @@ async def get_current_user(current_user: models.User = Depends(get_current_user)
         "username": current_user.username,
         "profile_picture_url": current_user.profile_picture_url
     }
+
+@app.post("/classify")
+async def classify_message(message: str):
+    return {"classification": openai_client.classify_text(message)}
+
+    
