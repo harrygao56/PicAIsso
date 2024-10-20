@@ -81,6 +81,7 @@ function MessageInputBox({ currentUser, messageRecipient, refetchMessages, setSe
           await sendMessage(messageData);
           
           // Clear the message and imageUrl after sending
+          setImage(null);
           setMessage('');
           setImageUrl(null);
           setPromptAnswered(false);
