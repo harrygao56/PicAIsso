@@ -3,17 +3,33 @@ import MessageFrom from './MessageFrom';
 import MessageTo from './MessageTo';
 import MessageInputBox from './MessageInputBox';
 import MessagesBoxHeader from './Header';
+import axios from 'axios';
 
-function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, setSelectedPerson, messageMap, setMessageMap }) {
+function MessagesBox({ currentUser, selectedPerson, refetchMessages, setSelectedPerson, messagesMap, setMessagesMap }) {
+  // Initialize messageMap as a Map if it's not already
+  const [messages, setMessages] = useState([]);
   const [messageRecipient, setMessageRecipient] = useState(selectedPerson);
   const messageInputBoxRef = useRef(null);
   const [messageInputBoxHeight, setMessageInputBoxHeight] = useState(0);
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    setMessageRecipient(selectedPerson);
-  }, [selectedPerson]);
+    if (!messagesMap || !(messagesMap instanceof Map)) {
+      setMessagesMap(new Map());
+    }
+  }, [messagesMap]);
 
+  useEffect(() => {
+    if (selectedPerson) {
+      console.log("setting for selectedPerson", selectedPerson);
+      console.log("setting messages", messagesMap);
+      setMessages(messagesMap.get(selectedPerson) || []); // Use an empty array as default
+    }
+    setMessageRecipient(selectedPerson);
+  }, [selectedPerson, messagesMap]);
+  useEffect(() => {
+    console.log("messages", messages);
+  }, [messages]);
   useEffect(() => {
     if (messageInputBoxRef.current) {
       setMessageInputBoxHeight(messageInputBoxRef.current.offsetHeight);
@@ -28,17 +44,17 @@ function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, s
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
       console.log("received message from server", message);
-      const sender = message.sender_username;
-      // Append the new message to the messageMap for the sender
-      setMessageMap((prevMessageMap) => {
-        const updatedSenderMessages = [...(prevMessageMap[sender] || []), message];
-        return {
-          ...prevMessageMap,
-          [sender]: updatedSenderMessages,
-        };
+      const sender = message.sender.username;
+      const recipient = message.recipient.username;
+      // Ensure prevMap is a Map
+      setMessagesMap(prevMap => {
+        const newMap = new Map(prevMap instanceof Map ? prevMap : Object.entries(prevMap)); // Convert object to Map if needed
+        const key = sender === currentUser ? recipient : sender;
+        const existingMessages = newMap.get(key) || [];
+        newMap.set(key, [message, ...existingMessages]);
+        console.log("newMap", newMap);
+        return newMap;
       });
-      // Trigger a re-fetch of messages to ensure parent component is updated
-      refetchMessages();
     };
 
     return () => {
@@ -46,12 +62,19 @@ function MessagesBox({ messages, currentUser, selectedPerson, refetchMessages, s
     };
   }, [currentUser.id]);
 
-  const sendMessage = (messageData) => {
+  const sendMessage =async  (messageData) => {
     if (socket && socket.readyState === WebSocket.OPEN) {
       console.log("sending message to server");
       socket.send(JSON.stringify(messageData));
     }
+    
+    
   };
+
+  // Add this useEffect to log messages when they change
+  useEffect(() => {
+    console.log("messages", messages);
+  }, [messages]);
 
   return (
     <div className="messages-box" style={{ display: 'flex', flexDirection: 'column', backgroundColor: 'white' }}>

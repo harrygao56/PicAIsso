@@ -274,12 +274,21 @@ async def websocket_endpoint(websocket: WebSocket, client_id: int, db: Session =
                 "timestamp": db_message.timestamp.isoformat(),
                 "sender_id": db_message.sender_id,
                 "recipient_id": db_message.recipient_id,
-                "sender_username": db_message.sender.username,
-                "recipient_username": db_message.recipient.username
+                "sender": {
+                    "id": db_message.sender_id,
+                    "username": db_message.sender.username  # Include sender's username
+                },
+                "recipient": {
+                    "id": db_message.recipient_id,
+                    "username": db_message.recipient.username  # Include recipient's username
+                }
             }
 
             # Send the message to the recipient
             await manager.send_personal_message(json.dumps(message_to_send), recipient.id)
+
+            # Send the message back to the sender
+            await manager.send_personal_message(json.dumps(message_to_send), client_id)
 
     except WebSocketDisconnect:
         print(f"Client {client_id} disconnected")
