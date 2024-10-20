@@ -110,7 +110,7 @@ function PopupBox({ message, classification, loadingImageGeneration, setLoadingI
   return (
     <div className="popupContainer" style={styles.popup}>
       {loadingImageGeneration ? (
-        <div className="loadingBox">
+        <div className="loadingBox" style = {{marginTop:"15px"}}>
           <div className="spinner"></div>
         </div>
       ) : imageUrl ? (
